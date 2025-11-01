@@ -17,3 +17,9 @@ All information is displayed on the console, but the architecture is prepared to
 
 ---
 
+## Main Features
+
+- Text extraction from Wiki-type sites (2 or 3 configurable URLs).
+- Extraction and organization of real estate listings from a selected portal.
+- Storage of cleaned and processed data in structured format (CSV).
+- Modularity and extensibility through classes and inheritance.
