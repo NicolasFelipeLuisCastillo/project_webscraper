@@ -3,9 +3,9 @@
 ### National University of Colombia 
 **Course:** Obejct Oriented Programming  
 **Members:**  
-- Nicolas Felipe Luis Castillo — Diseño POO y control de versiones  
-- Juan Daniel Egoavil Cardozo — Scraper de bienes raíces  
-- Maycol David Lopez Largo — Gestión de datos y scraper base/wiki  
+- Nicolas Felipe Luis Castillo — Object-oriented design and version control 
+- Juan Daniel Egoavil Cardozo — Real estate scraper
+- Maycol David Lopez Largo — Data management and scraper base/wiki 
 
 ---
 
