@@ -25,18 +25,18 @@ This document explains how to collaborate on the Web Scraping project in Python.
 4. **Create a PR**
     From your branch to dev
 
-## Summary
+**Summary**
 
 Briefly describe the changes made and their purpose.
 
 ---
 
-## Related Issue
-Closes #
+**Related Issue**
+
 
 ---
 
-## Type
+**Type**
 - [ ] 🐛 Fix — Error correction
 - [x] ✨ Feature — New feature
 - [ ] 🧹 Refactor — Cleaning or restructuring
@@ -45,8 +45,8 @@ Closes #
 
 ---
 
-## How to test
-1. Run the main module with:
+**How to test**
+Run the main module with:
    ```bash
    python src/main.py
    ```
