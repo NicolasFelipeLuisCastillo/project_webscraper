@@ -1,0 +1,69 @@
+
+# Python Ignore Rules
+
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+
+#Environment & Dependencies
+
+
+venv/
+.env/
+env/
+ENV/
+.ipynb_checkpoints/
+
+
+#  IDE & Editor Settings
+
+
+.vscode/
+.idea/
+
+
+# Build & Packaging
+
+build/
+dist/
+*.egg-info/
+.eggs/
+
+
+# Tests & Reports
+
+.coverage
+htmlcov/
+.cache/
+pytest_cache/
+nosetests.xml
+coverage.xml
+test-results.xml
+
+
+# Data Files
+
+data/
+src/data/
+src/data/scraped_data/
+*.csv
+*.json
+*.xlsx
+*.txt
+
+# Logs
+
+*.log
+logs/
+log.txt
+
+# OS Files
+
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
