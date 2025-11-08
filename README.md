@@ -23,3 +23,56 @@ All information is displayed on the console, but the architecture is prepared to
 - Extraction and organization of real estate listings from a selected portal.
 - Storage of cleaned and processed data in structured format (CSV).
 - Modularity and extensibility through classes and inheritance.
+
+## Class Diagram
+``` mermaid
+classDiagram
+direction TB
+
+class Scraper {
+    <<abstract>>
+    - base_url: str
+    - endpoints: list
+    - session
+    - data: list
+    + __init__(base_url, endpoints)
+    + fetch_html(endpoint)
+    + parse(html)
+    + save_data(filename, folder)
+    + run()
+}
+
+class WikiScraper {
+    + parse(html)
+}
+
+class RealEstateScraper {
+    + parse(html)
+}
+
+class Parser {
+    + extract_text(html)
+    + extract_links(html)
+}
+
+class FileManager {
+    + save_json(data, filename, folder)
+    + load_json(filepath)
+}
+
+class MainApp {
+    + run_wiki_scraper()
+    + run_realestate_scraper()
+    + show_results()
+}
+
+Scraper <|-- WikiScraper
+Scraper <|-- RealEstateScraper
+
+MainApp --> WikiScraper : uses
+MainApp --> RealEstateScraper : uses
+WikiScraper --> Parser : uses
+RealEstateScraper --> Parser : uses
+Scraper --> FileManager : uses
+
+```
