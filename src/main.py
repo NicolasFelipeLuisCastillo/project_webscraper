@@ -1,14 +1,36 @@
-from models.wiki_scraper import WikiScraper
-from models.realestate_scraper import RealEstateScraper
+import logging
+from src.models.wiki_scraper import WikiScraper
+from src.models.realestate_scraper import RealEstateScraper
 
 
-def main():
-    wiki = WikiScraper("example")
-    wiki.run()
+def run_wiki_scraper():
+    logging.info("Starting WikiScraper...")
+    scraper = WikiScraper()
+    scraper.run()
+    scraper.save_data("wiki_data.json", folder="data")
 
-    real_estate = RealEstateScraper("example")
-    real_estate.run()
+
+def run_realestate_scraper():
+    logging.info("Starting RealEstateScraper...")
+    scraper = RealEstateScraper()
+    scraper.run()
+    scraper.save_data()
 
 
 if __name__ == "__main__":
-    main()
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+    )
+
+    print("Select scraper to run:")
+    print("1. Wikipedia Scraper")
+    print("2. Real Estate Scraper (BogotaRealEstate)")
+    choice = input("Enter 1 or 2: ").strip()
+
+    if choice == "1":
+        run_wiki_scraper()
+    elif choice == "2":
+        run_realestate_scraper()
+    else:
+        print("Invalid choice.")
