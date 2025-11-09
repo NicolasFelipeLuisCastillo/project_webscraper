@@ -424,10 +424,17 @@ class PropertyExporter:
 
 
 class RealEstateScraper(Scraper):
-    """Real estate scraper inheriting from Scraper base class."""
+    """
+    Real estate scraper that inherits from Scraper base class.
+    Uses Selenium for dynamic content scraping.
+    """
 
     def __init__(self, save_every: int = SAVE_BATCH):
-        super().__init__(base_url="https://bogotarealestate.com.co", endpoints=[])
+        # Initialize parent with empty endpoints since we use Selenium
+        super().__init__(
+            base_url="https://bogotarealestate.com.co", 
+            endpoints=[]
+        )
         self.ctrl = WebDriverController()
         self.list_scraper = PropertyListScraper(self.ctrl.driver)
         self.detail_scraper = PropertyDetailScraper(self.ctrl.driver)
@@ -437,11 +444,33 @@ class RealEstateScraper(Scraper):
         self.processed_urls = set()
 
     def parse(self, html):
-        """Not used because we use Selenium instead of requests."""
+        """
+        Implement abstract method from parent class.
+        Not used in Selenium approach but required by base class.
+        """
         return []
 
+    def fetch_html(self, endpoint):
+        """
+        Override parent method to use Selenium instead of requests.
+        """
+        url = self.base_url + endpoint
+        try:
+            self.ctrl.driver.get(url)
+            WebDriverWait(self.ctrl.driver, 15).until(
+                EC.presence_of_element_located((By.TAG_NAME, "body"))
+            )
+            human_pause()
+            return self.ctrl.driver.page_source
+        except Exception as error:
+            logging.error(f"Request failed for {url}: {error}")
+            return ""
+
     def run(self):
-        """Override base run method using Selenium logic."""
+        """
+        Override base run method using Selenium logic.
+        This is the main scraping orchestration method.
+        """
         try:
             sections = {
                 "Sales": (
@@ -522,11 +551,14 @@ class RealEstateScraper(Scraper):
                 "properties_all.json"
             )
             
+            # Store data in parent class for compatibility
+            self.data = self.sales_data + self.rentals_data
+            
             logging.info(
                 f"Scraping completed. "
                 f"Sales: {len(self.sales_data)}, "
                 f"Rentals: {len(self.rentals_data)}, "
-                f"Total: {len(self.sales_data) + len(self.rentals_data)}"
+                f"Total: {len(self.data)}"
             )
 
         except Exception as e:
@@ -542,6 +574,18 @@ class RealEstateScraper(Scraper):
             raise
         finally:
             self.ctrl.close()
+
+    def save_data(self, filename=None, folder=DATA_FOLDER):
+        """
+        Override parent save method to use our custom exporter.
+        """
+        if not self.data:
+            logging.warning("No data to save.")
+            return
+        
+        # Use our custom exporter for consistent file structure
+        PropertyExporter.save_files(self.sales_data, self.rentals_data)
+        PropertyExporter.save_json(self.data, "properties_all.json")
 
 
 if __name__ == "__main__":
