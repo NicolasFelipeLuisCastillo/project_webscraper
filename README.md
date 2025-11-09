@@ -1,7 +1,7 @@
 # Final Project OOP: Web Scraping System in Python
 
 ### National University of Colombia 
-**Course:** Object Oriented Programming  
+**Course:** Obejct Oriented Programming  
 **Members:**  
 - Nicolas Felipe Luis Castillo — Object-oriented design and version control 
 - Juan Daniel Egoavil Cardozo — Real estate scraper
