@@ -29,6 +29,7 @@ All information is displayed on the console, but the architecture is prepared to
 classDiagram
 direction TB
 
+%% ==== CLASE BASE ====
 class Scraper {
     <<abstract>>
     - base_url: str
@@ -42,19 +43,27 @@ class Scraper {
     + run()
 }
 
+%% ==== SUBCLASES ====
 class WikiScraper {
     + parse(html)
 }
 
 class RealEstateScraper {
-    - driver
-    + __init__(base_url, endpoints)
-    + _init_driver(visible: bool)
-    + fetch_html(url: str) str
-    + parse(html: str) list
-    + run() None
+    - ctrl: WebDriverController
+    - list_scraper: PropertyListScraper
+    - detail_scraper: PropertyDetailScraper
+    - save_every: int
+    - sales_data: list
+    - rentals_data: list
+    - processed_urls: set
+    + __init__(save_every)
+    + parse(html)
+    + fetch_html(endpoint)
+    + run()
+    + save_data(filename, folder)
 }
 
+%% ==== COMPONENTES AUXILIARES ====
 class Parser {
     + extract_text(html)
     + extract_links(html)
@@ -71,6 +80,39 @@ class MainApp {
     + show_results()
 }
 
+%% ==== CLASES NUEVAS ====
+class WebDriverController {
+    - driver
+    + __init__()
+    + setup_driver()
+    + close()
+}
+
+class PropertyListScraper {
+    - driver: webdriver.Chrome
+    + __init__(driver)
+    + extract_links_and_prices() List~Dict~
+}
+
+class PropertyDetailScraper {
+    - driver: webdriver.Chrome
+    - normalized_map: dict
+    + __init__(driver)
+    + extract_detail(url, title, price) Dict
+    - _match_label(label_text)
+    - _extract_from_dl(soup)
+    - _extract_from_tables(soup)
+    - _extract_from_lists(soup)
+    - _extract_from_divs(soup)
+}
+
+class PropertyExporter {
+    + ensure_folder_exists()
+    + save_files(sales_data: List~Dict~, rentals_data: List~Dict~)
+    + save_json(data: List~Dict~, filename: str)
+}
+
+%% ==== RELACIONES ====
 Scraper <|-- WikiScraper
 Scraper <|-- RealEstateScraper
 
@@ -79,5 +121,14 @@ MainApp --> RealEstateScraper : uses
 WikiScraper --> Parser : uses
 RealEstateScraper --> Parser : uses
 Scraper --> FileManager : uses
+
+%% ==== NUEVAS RELACIONES ====
+RealEstateScraper --> WebDriverController : controls
+RealEstateScraper --> PropertyListScraper : uses
+RealEstateScraper --> PropertyDetailScraper : uses
+RealEstateScraper --> PropertyExporter : uses
+PropertyDetailScraper --> WebDriverController : uses driver
+PropertyListScraper --> WebDriverController : uses driver
+
 
 ```
