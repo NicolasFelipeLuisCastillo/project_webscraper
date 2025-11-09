@@ -47,7 +47,12 @@ class WikiScraper {
 }
 
 class RealEstateScraper {
-    + parse(html)
+    - driver
+    + __init__(base_url, endpoints)
+    + _init_driver(visible: bool)
+    + fetch_html(url: str) str
+    + parse(html: str) list
+    + run() None
 }
 
 class Parser {
