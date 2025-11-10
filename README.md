@@ -63,11 +63,6 @@ class RealEstateScraper {
     + save_data(filename, folder)
 }
 
-%% ==== COMPONENTES AUXILIARES ====
-class Parser {
-    + extract_text(html)
-    + extract_links(html)
-}
 
 class FileManager {
     + save_json(data, filename, folder)
@@ -80,7 +75,6 @@ class MainApp {
     + show_results()
 }
 
-%% ==== CLASES NUEVAS ====
 class WebDriverController {
     - driver
     + __init__()
@@ -112,7 +106,6 @@ class PropertyExporter {
     + save_json(data: List~Dict~, filename: str)
 }
 
-%% ==== RELACIONES ====
 Scraper <|-- WikiScraper
 Scraper <|-- RealEstateScraper
 
@@ -122,7 +115,6 @@ WikiScraper --> Parser : uses
 RealEstateScraper --> Parser : uses
 Scraper --> FileManager : uses
 
-%% ==== NUEVAS RELACIONES ====
 RealEstateScraper --> WebDriverController : controls
 RealEstateScraper --> PropertyListScraper : uses
 RealEstateScraper --> PropertyDetailScraper : uses
