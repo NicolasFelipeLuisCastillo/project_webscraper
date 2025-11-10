@@ -109,7 +109,6 @@ Scraper <|-- RealEstateScraper
 
 MainApp --> WikiScraper : uses
 MainApp --> RealEstateScraper : uses
-RealEstateScraper --> Parser : uses
 Scraper --> FileManager : uses
 
 RealEstateScraper --> WebDriverController : controls
