@@ -29,7 +29,6 @@ All information is displayed on the console, but the architecture is prepared to
 classDiagram
 direction TB
 
-%% ==== CLASE BASE ====
 class Scraper {
     <<abstract>>
     - base_url: str
@@ -43,7 +42,6 @@ class Scraper {
     + run()
 }
 
-%% ==== SUBCLASES ====
 class WikiScraper {
     + parse(html)
 }
@@ -111,7 +109,6 @@ Scraper <|-- RealEstateScraper
 
 MainApp --> WikiScraper : uses
 MainApp --> RealEstateScraper : uses
-WikiScraper --> Parser : uses
 RealEstateScraper --> Parser : uses
 Scraper --> FileManager : uses
 
