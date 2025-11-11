@@ -118,8 +118,6 @@ Scraper <|-- RealEstateScraper
 
 MainApp --> WikiScraper : uses
 MainApp --> RealEstateScraper : uses
-WikiScraper --> Parser : uses
-RealEstateScraper --> Parser : uses
 Scraper --> FileManager : uses
 
 %% ==== NUEVAS RELACIONES ====
@@ -131,3 +129,135 @@ PropertyDetailScraper --> WebDriverController : uses driver
 PropertyListScraper --> WebDriverController : uses driver
 
 ```
+
+#### **2.1 Section Configuration**
+```python
+sections = {
+    "Sales": "sales_search_URL",
+    "Rentals": "rentals_search_URL"
+}
+```
+
+#### **2.2 Loop Through Sections and Pages**
+```text
+For each section (Sales/Rentals):
+    │
+    ├── For each page (up to MAX_PAGES):
+    │   │
+    │   ├── Build page URL
+    │   ├── Navigate with Selenium
+    │   ├── Wait for load using WebDriverWait
+    │   ├── Simulated human pause
+    │   │
+    │   └── Extract properties from list:
+    │       │
+    │       └── For each property in the list:
+    │           │
+    │           ├── Check for duplicates
+    │           ├── Navigate to detail page
+    │           ├── Extract detailed information
+    │           ├── Normalize and map fields
+    │           └── Store in the corresponding list
+    │
+    └── End section
+```
+|
+
+---
+
+### **3. Listing Processing (PropertyListScraper)**
+```python
+extract_links_and_prices()  # → Extracts from listing pages
+```
+
+- Finds property cards using multiple CSS selectors  
+- Extracts: URL, title, price  
+- Normalizes relative URLs to absolute  
+- Uses fallbacks when expected elements are not found
+
+---
+
+### **4. Detail Processing (PropertyDetailScraper)**
+```python
+extract_detail(url, title, price)  # → Extracts complete information
+```
+
+- Navigates to the property’s individual page  
+- Attempts multiple extraction strategies:
+  - Definition lists (`<dl><dt><dd>`)
+  - Tables (`<table><tr><td>`)
+  - Unordered lists (`<ul><li>`)
+  - Divs with specific patterns  
+- Maps Spanish → English fields using `FIELD_MAP`  
+- Handles errors with retries (`MAX_RETRIES`)
+
+---
+
+### **5. Data Export (PropertyExporter)**
+```python
+save_files(sales_data, rentals_data)  # → Saves results
+```
+
+- Creates CSV files: sales, rentals, combined  
+- Generates a JSON file with all data  
+- Folder structure: `realestate_data/`
+
+---
+
+## **Key Features of the Flow**
+
+### **Navigation Handling**
+- Human-like pauses with random delays  
+- Explicit waits for critical elements  
+- Automatic retries on failures  
+- Duplicate control using `processed_urls`
+
+---
+
+### **Multiple Extraction Strategies**
+```python
+# Four different methods to find data
+extraction_methods = [
+    self._extract_from_dl,      # Definition lists
+    self._extract_from_tables,  # HTML tables
+    self._extract_from_lists,   # Unordered lists
+    self._extract_from_divs     # Divs with specific patterns
+]
+```
+
+---
+
+### **Intelligent Field Mapping**
+```python
+FIELD_MAP = {
+    "país": "Country",
+    "departamento": "State", 
+    "ciudad": "City",
+    "área construida": "Built Area",
+    # ... more mappings
+}
+```
+
+---
+
+### **Robust Error Handling**
+- Retries on loading failures  
+- Partial data saving on critical errors  
+- Detailed logging for debugging  
+- Continues after individual errors
+
+---
+
+## **Data Flow**
+```text
+Base URLs → Property Lists → Detail Pages → 
+Normalized Data → CSV/JSON Files
+```
+
+---
+
+## **Configuration and Limits**
+- `MAX_PAGES = 1` (for testing only)  
+- `SAVE_BATCH = 5` (how often to save)  
+- `MAX_RETRIES = 3` (retries per property)  
+- Human-like pauses between **3.5–4.5 seconds**

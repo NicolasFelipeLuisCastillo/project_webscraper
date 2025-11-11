@@ -10,14 +10,25 @@ class Scraper:
         self.session = requests.Session()
         self.data = []
 
-    def fetch_html(self, endpoint):
-        url = self.base_url + endpoint
+    def fetch_html(self, endpoint: str) -> str:
+        url = f"{self.base_url}{endpoint}"
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/120.0.0.0 Safari/537.36"
+            ),
+            "Accept-Language": "en-US,en;q=0.9",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Connection": "keep-alive",
+        }
+
         try:
-            response = self.session.get(url, timeout=10)
-            response.raise_for_status()  # Raises HTTPError if response is not 200 OK
+            response = requests.get(url, headers=headers, timeout=10)
+            response.raise_for_status()
             return response.text
-        except requests.exceptions.RequestException as error:
-            print("Request failed:", error)
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
             return ""
 
     def parse(self, html):
