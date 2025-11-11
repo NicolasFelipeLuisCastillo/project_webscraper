@@ -16,7 +16,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from typing import List, Dict
-from scraper_base import Scraper
+from src.models.scraper_base import Scraper
 
 
 # Configuration
@@ -592,3 +592,4 @@ if __name__ == "__main__":
     logging.info("Starting RealEstateScraper test run...")
     scraper = RealEstateScraper(save_every=SAVE_BATCH)
     scraper.run()
+
