@@ -1,3 +1,4 @@
+# realestate_scraper.py
 import os
 import time
 import random
@@ -15,14 +16,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from typing import List, Dict
-from src.models.scraper_base import Scraper
+from scraper_base import Scraper
 
 
 # Configuration
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 SAVE_BATCH = 5
@@ -41,7 +42,6 @@ def human_pause():
 def normalize_text(s: str) -> str:
     """Normalize text: lowercase, strip, remove accents and extra spaces."""
     import unicodedata
-
     if not s:
         return ""
     s2 = s.lower().strip()
@@ -67,11 +67,11 @@ def build_page_url_from_template(template: str, page_num: int) -> str:
 
 class WebDriverController:
     """Controller for WebDriver initialization and management."""
-
+    
     def __init__(self):
         self.driver = None
         self.setup_driver()
-
+    
     def setup_driver(self):
         """Setup or reset the web driver."""
         if self.driver:
@@ -79,7 +79,7 @@ class WebDriverController:
                 self.driver.quit()
             except Exception:
                 pass
-
+        
         options = Options()
         options.add_argument("--start-maximized")
         options.add_argument("--disable-blink-features=AutomationControlled")
@@ -87,14 +87,15 @@ class WebDriverController:
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option("useAutomationExtension", False)
-
+        options.add_experimental_option('useAutomationExtension', False)
+        
         # Uncomment to run without GUI:
         # options.add_argument("--headless=new")
-
+        
         try:
             self.driver = webdriver.Chrome(
-                service=Service(ChromeDriverManager().install()), options=options
+                service=Service(ChromeDriverManager().install()), 
+                options=options
             )
             self.driver.execute_script(
                 "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
@@ -115,7 +116,7 @@ class WebDriverController:
 
 class PropertyListScraper:
     """Scraper for property listing pages."""
-
+    
     def __init__(self, driver: webdriver.Chrome):
         self.driver = driver
 
@@ -130,23 +131,23 @@ class PropertyListScraper:
             "div.property-item, div.listing-card, div.item, "
             "div.card, div.property, .list-item"
         )
-
+        
         for card in cards:
             # Find links in different ways
             link_tag = (
-                card.select_one("a[href*='bogotarealestate.com.co']")
-                or card.select_one("a.property-link")
-                or card.select_one("a[href*='/apartamento']")
-                or card.select_one("a[href*='/casa']")
+                card.select_one("a[href*='bogotarealestate.com.co']") or 
+                card.select_one("a.property-link") or
+                card.select_one("a[href*='/apartamento']") or
+                card.select_one("a[href*='/casa']")
             )
-
+            
             if not link_tag:
                 continue
 
             href = link_tag.get("href", "").strip()
             if not href:
                 continue
-
+                
             if href.startswith("/"):
                 base = (
                     f"{urlparse(self.driver.current_url).scheme}://"
@@ -156,9 +157,10 @@ class PropertyListScraper:
 
             # Extract title
             title = "N/A"
-            title_tag = card.select_one(
-                "h2 a, h3 a, .title a, .property-title, .t8-ellipsis"
-            ) or card.select_one("h2, h3, .title")
+            title_tag = (
+                card.select_one("h2 a, h3 a, .title a, .property-title, .t8-ellipsis") or
+                card.select_one("h2, h3, .title")
+            )
             if title_tag:
                 title = title_tag.get_text(strip=True)
             else:
@@ -170,13 +172,8 @@ class PropertyListScraper:
             # Extract price
             price = "N/A"
             price_selectors = [
-                ".price",
-                ".precio",
-                ".property-price",
-                ".price_sale",
-                "[class*='price']",
-                ".value",
-                ".cost",
+                ".price", ".precio", ".property-price", ".price_sale", 
+                "[class*='price']", ".value", ".cost"
             ]
             for selector in price_selectors:
                 price_tag = card.select_one(selector)
@@ -186,7 +183,11 @@ class PropertyListScraper:
                         price = price_text
                         break
 
-            properties.append({"URL": href, "Title": title, "Price": price})
+            properties.append({
+                "URL": href, 
+                "Title": title, 
+                "Price": price
+            })
 
         logging.info(f"Found {len(properties)} properties on this page")
         return properties
@@ -194,7 +195,7 @@ class PropertyListScraper:
 
 class PropertyDetailScraper:
     """Scraper for property detail pages."""
-
+    
     FIELD_MAP = {
         "país": "Country",
         "pais": "Country",
@@ -226,12 +227,14 @@ class PropertyDetailScraper:
         "tipo de inmueble": "Property Type",
         "tipo de negocio": "Business Type",
         "valor administración": "Administration Fee",
-        "valor administracion": "Administration Fee",
+        "valor administracion": "Administration Fee"
     }
 
     def __init__(self, driver: webdriver.Chrome):
         self.driver = driver
-        self.normalized_map = {normalize_text(k): v for k, v in self.FIELD_MAP.items()}
+        self.normalized_map = {
+            normalize_text(k): v for k, v in self.FIELD_MAP.items()
+        }
 
     def _match_label(self, label_text: str) -> str:
         """Match Spanish labels to English field names."""
@@ -246,18 +249,16 @@ class PropertyDetailScraper:
     def extract_detail(self, url: str, title: str, price: str) -> Dict:
         """Extract detailed information from property page."""
         logging.info(f"Opening detail page: {url}")
-
+        
         # Initialize item with default values
         item = {v: "N/A" for v in set(self.normalized_map.values())}
-        item.update(
-            {
-                "URL": url,
-                "Title": title,
-                "Price": price,
-                "Extraction Date": datetime.now().strftime("%Y-%m-%d %H:%M"),
-                "Error": None,
-            }
-        )
+        item.update({
+            "URL": url,
+            "Title": title,
+            "Price": price,
+            "Extraction Date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "Error": None
+        })
 
         for attempt in range(MAX_RETRIES):
             try:
@@ -284,7 +285,7 @@ class PropertyDetailScraper:
             self._extract_from_dl,
             self._extract_from_tables,
             self._extract_from_lists,
-            self._extract_from_divs,
+            self._extract_from_divs
         ]
 
         for method in extraction_methods:
@@ -361,23 +362,22 @@ class PropertyDetailScraper:
             patterns = {
                 "Bedrooms": r"(\d+)\s*(?:alcoba|habitación|habitaciones|bedroom|bed)",
                 "Bathrooms": r"(\d+)\s*(?:baño|baños|bathroom|bath)",
-                "Garage": r"(\d+)\s*(?:garaje|garajes|garage|parking)",
+                "Garage": r"(\d+)\s*(?:garaje|garajes|garage|parking)"
             }
-
+            
             import re
-
             for field, pattern in patterns.items():
                 match = re.search(pattern, text, re.IGNORECASE)
                 if match:
                     data[field] = match.group(1)
                     logging.debug(f"Found {field}: {match.group(1)} from div pattern")
-
+        
         return data
 
 
 class PropertyExporter:
     """Handles data export to various formats."""
-
+    
     @staticmethod
     def ensure_folder_exists():
         """Create data folder if it doesn't exist."""
@@ -389,23 +389,21 @@ class PropertyExporter:
     def save_files(sales_data: List[Dict], rentals_data: List[Dict]):
         """Save only CSV files: sales, rentals, and combined."""
         PropertyExporter.ensure_folder_exists()
-
+        
         # Save sales data
         if sales_data:
             sales_df = pd.DataFrame(sales_data)
             sales_path = os.path.join(DATA_FOLDER, "properties_sales.csv")
             sales_df.to_csv(sales_path, index=False, encoding="utf-8-sig")
             logging.info(f"Saved {len(sales_data)} sales properties to {sales_path}")
-
+        
         # Save rentals data
         if rentals_data:
             rentals_df = pd.DataFrame(rentals_data)
             rentals_path = os.path.join(DATA_FOLDER, "properties_rentals.csv")
             rentals_df.to_csv(rentals_path, index=False, encoding="utf-8-sig")
-            logging.info(
-                f"Saved {len(rentals_data)} rental properties to {rentals_path}"
-            )
-
+            logging.info(f"Saved {len(rentals_data)} rental properties to {rentals_path}")
+        
         # Save combined data
         all_data = sales_data + rentals_data
         if all_data:
@@ -420,7 +418,6 @@ class PropertyExporter:
         PropertyExporter.ensure_folder_exists()
         path = os.path.join(DATA_FOLDER, filename)
         import json
-
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
         logging.info(f"JSON saved: {path}")
@@ -434,7 +431,10 @@ class RealEstateScraper(Scraper):
 
     def __init__(self, save_every: int = SAVE_BATCH):
         # Initialize parent with empty endpoints since we use Selenium
-        super().__init__(base_url="https://bogotarealestate.com.co", endpoints=[])
+        super().__init__(
+            base_url="https://bogotarealestate.com.co", 
+            endpoints=[]
+        )
         self.ctrl = WebDriverController()
         self.list_scraper = PropertyListScraper(self.ctrl.driver)
         self.detail_scraper = PropertyDetailScraper(self.ctrl.driver)
@@ -480,18 +480,18 @@ class RealEstateScraper(Scraper):
                 "Rentals": (
                     "https://bogotarealestate.com.co/search"
                     "?business_type%5B0%5D=for_rent&order_by=created_at"
-                ),
+                )
             }
 
             for section, template in sections.items():
                 logging.info(f"Starting section: {section}")
                 page = 1
                 section_new_properties = []
-
+                
                 while page <= MAX_PAGES:
                     page_url = build_page_url_from_template(template, page)
                     logging.info(f"Loading page {page}: {page_url}")
-
+                    
                     try:
                         self.ctrl.driver.get(page_url)
                         WebDriverWait(self.ctrl.driver, 15).until(
@@ -504,29 +504,27 @@ class RealEstateScraper(Scraper):
 
                     props = self.list_scraper.extract_links_and_prices()
                     if not props:
-                        logging.info(
-                            f"No properties found on page {page}, ending section"
-                        )
+                        logging.info(f"No properties found on page {page}, ending section")
                         break
 
                     logging.info(f"Processing {len(props)} properties from page {page}")
-
+                    
                     for i, prop in enumerate(props):
                         # Skip if URL already processed
                         if prop["URL"] in self.processed_urls:
                             logging.info(f"Skipping duplicate: {prop['Title'][:50]}...")
                             continue
-
+                            
                         logging.info(f"Processing: {prop['Title'][:50]}...")
-
+                        
                         detail = self.detail_scraper.extract_detail(
                             prop["URL"], prop["Title"], prop["Price"]
                         )
                         detail["Section"] = section
-
+                        
                         self.processed_urls.add(prop["URL"])
                         section_new_properties.append(detail)
-
+                        
                         # Add to appropriate list
                         if section == "Sales":
                             self.sales_data.append(detail)
@@ -549,12 +547,13 @@ class RealEstateScraper(Scraper):
             logging.info("Saving final data files...")
             PropertyExporter.save_files(self.sales_data, self.rentals_data)
             PropertyExporter.save_json(
-                self.sales_data + self.rentals_data, "properties_all.json"
+                self.sales_data + self.rentals_data, 
+                "properties_all.json"
             )
-
+            
             # Store data in parent class for compatibility
             self.data = self.sales_data + self.rentals_data
-
+            
             logging.info(
                 f"Scraping completed. "
                 f"Sales: {len(self.sales_data)}, "
@@ -583,7 +582,7 @@ class RealEstateScraper(Scraper):
         if not self.data:
             logging.warning("No data to save.")
             return
-
+        
         # Use our custom exporter for consistent file structure
         PropertyExporter.save_files(self.sales_data, self.rentals_data)
         PropertyExporter.save_json(self.data, "properties_all.json")
