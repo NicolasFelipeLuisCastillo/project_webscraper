@@ -1,36 +1,54 @@
-import logging
+import os
+import sys
+
+# Asegurar que src/ esté en sys.path
+ROOT = os.path.dirname(os.path.abspath(__file__))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
+# Imports (paquetes)
 from src.models.wiki_scraper import WikiScraper
-from src.models.realestate_scraper import RealEstateScraper
+from src.models.properati_scraper.properati_main import ProperatiScraper
 
 
-def run_wiki_scraper():
-    logging.info("Starting WikiScraper...")
-    scraper = WikiScraper()
-    scraper.run()
-    scraper.save_data("wiki_data.json", folder="data")
+def mostrar_menu():
+    print("\n==============================")
+    print("       SELECCIONA SCRAPER")
+    print("==============================")
+    print("1) Properati Scraper")
+    print("2) Wiki Scraper")
+    print("0) Salir\n")
+    return input("Seleccione una opción: ").strip()
 
 
-def run_realestate_scraper():
-    logging.info("Starting RealEstateScraper...")
-    scraper = RealEstateScraper()
-    scraper.run()
-    scraper.save_data()
+def main():
+    opcion = mostrar_menu()
+
+    if opcion == "1":
+        print("\n➡ Ejecutando ProperatiScraper...\n")
+        scraper = ProperatiScraper(
+            mode="venta",
+            max_pages=1,
+            headless=True,
+            requests_per_minute=30,
+            scrape_project_units=True,
+        )
+        scraper.run()
+        print("\n✔ ProperatiScraper finalizado.\n")
+
+    elif opcion == "2":
+        print("\n➡ Ejecutando WikiScraper...\n")
+        scraper = WikiScraper()
+        result = scraper.run()
+        print("\n✔ WikiScraper finalizado.")
+        print(result)
+
+    elif opcion == "0":
+        print("Saliendo...")
+        return
+    else:
+        print("Opción inválida.")
 
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-    )
-
-    print("Select scraper to run:")
-    print("1. Wikipedia Scraper")
-    print("2. Real Estate Scraper (BogotaRealEstate)")
-    choice = input("Enter 1 or 2: ").strip()
-
-    if choice == "1":
-        run_wiki_scraper()
-    elif choice == "2":
-        run_realestate_scraper()
-    else:
-        print("Invalid choice.")
+    main()

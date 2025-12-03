@@ -52,20 +52,23 @@ class Scraper:
             print("Error saving data:", error)
 
     def run(self):
-        if not self.endpoints:
+        if not getattr(self, "endpoints", None):
             print("No endpoints defined.")
-            return
+            return {"data": []}
+
+        results = []
 
         for endpoint in self.endpoints:
             html = self.fetch_html(endpoint)
             if not html:
                 continue
 
-            parsed_items = self.parse(html)
-            if parsed_items:
-                if isinstance(parsed_items, list):
-                    self.data.extend(parsed_items)
+            parsed = self.parse(html)
+            if parsed:
+                if isinstance(parsed, list):
+                    results.extend(parsed)
                 else:
-                    self.data.append(parsed_items)
+                    results.append(parsed)
 
-        print("Scraping completed. Total items:", len(self.data))
+        print("Scraping completed. Total items:", len(results))
+        return {"data": results}

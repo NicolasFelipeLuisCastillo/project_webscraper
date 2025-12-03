@@ -1,3 +1,7 @@
+import os
+import sys
+
+# Ajustar path para permitir imports absolutos
 from src.models.scraper_base import Scraper
 
 
