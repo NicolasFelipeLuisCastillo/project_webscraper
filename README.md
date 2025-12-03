@@ -1,32 +1,7 @@
 # Final Project OOP: Web Scraping System in Python
 
 ### National University of Colombia 
-**Course:** Obejct Oriented Programming  
-**Members:**  
-- Nicolas Felipe Luis Castillo — Object-oriented design and version control 
-- Juan Daniel Egoavil Cardozo — Real estate scraper
-- Maycol David Lopez Largo — Data management and scraper base/wiki 
-
----
-
-## Summary
-This project implements a **web scraping** system in Python, designed using **Object-Oriented Programming (OOP) principles**.
-The system aims to **extract information from Wiki-type sites** and **extract and organize real estate listings from a real estate portal** (e.g., Metrocuadrado, Ciencuadras, Properati, etc.), filtering the results by city or town.
-
-All information is displayed on the console, but the architecture is prepared to be compatible with a future graphical user interface (GUI).
-
----
-
-## Main Features
-
-- Text extraction from Wiki-type sites (2 or 3 configurable URLs).
-- Extraction and organization of real estate listings from a selected portal.
-- Storage of cleaned and processed data in structured format (CSV).
-- Modularity and extensibility through classes and inheritance.
-# Final Project OOP: Web Scraping System in Python
-
-### National University of Colombia 
-**Course:** Obejct Oriented Programming  
+**Course:** Object Oriented Programming  
 **Members:**  
 - Nicolas Felipe Luis Castillo — Object-oriented design and version control 
 - Juan Daniel Egoavil Cardozo — Real estate scraper
@@ -54,6 +29,7 @@ All information is displayed on the console, but the architecture is prepared to
 classDiagram
 direction TB
 
+%% ==== CLASE BASE ====
 class Scraper {
     <<abstract>>
     - base_url: str
@@ -67,6 +43,7 @@ class Scraper {
     + run()
 }
 
+<<<<<<< HEAD
 class SeleniumBaseScraper {
     - driver
     + __init__(driver)
@@ -88,12 +65,17 @@ class ProperatiScraper {
     - properties_processed: int
     - backup_counter: int
     + __init__(mode, max_pages, headless, requests_per_minute, scrape_project_units)
+=======
+%% ==== SUBCLASES ====
+class WikiScraper {
+>>>>>>> b14309afb9a099535bbd500459d600aa8868b485
     + parse(html)
     + _handle_captcha()
     + _save_data_incremental(new_properties_count, force_save)
     + run()
 }
 
+<<<<<<< HEAD
 class WebDriverController {
     - headless: bool
     - driver
@@ -107,6 +89,27 @@ class ListingScraper {
     + extract_links_from_soup(soup) list
     + extract_links(url) list
     + check_pagination_limit(soup, page_num) bool
+=======
+class RealEstateScraper {
+    - ctrl: WebDriverController
+    - list_scraper: PropertyListScraper
+    - detail_scraper: PropertyDetailScraper
+    - save_every: int
+    - sales_data: list
+    - rentals_data: list
+    - processed_urls: set
+    + __init__(save_every)
+    + parse(html)
+    + fetch_html(endpoint)
+    + run()
+    + save_data(filename, folder)
+}
+
+%% ==== COMPONENTES AUXILIARES ====
+class Parser {
+    + extract_text(html)
+    + extract_links(html)
+>>>>>>> b14309afb9a099535bbd500459d600aa8868b485
 }
 
 class DetailScraper {
@@ -130,6 +133,7 @@ class ProjectScraper {
     + scrape_project_with_units(project_url) list
 }
 
+<<<<<<< HEAD
 class DataHandler {
     - csv_filename: str
     - json_filename: str
@@ -232,71 +236,56 @@ ProjectScraper --> PropertyData : creates
 # **Base Scraper Code Flow**  
 ## **Executive Summary**  
 This is a modular and extensible HTTP-based web scraper designed to fetch and process HTML content from one or more endpoints. It uses the Requests library for network communication and stores the extracted data as JSON files. The scraper is implemented using an object-oriented base class (`Scraper`), which can be easily subclassed for specific use cases (e.g., parsing product pages, news articles, or APIs).  
+=======
+%% ==== CLASES NUEVAS ====
+class WebDriverController {
+    - driver
+    + __init__()
+    + setup_driver()
+    + close()
+}
 
-## **Main Execution Flow**  
-### **1. Initialization**  
-scraper = Scraper(base_url="https://example.com", endpoints=["/page1", "/page2"])  
-Initializes internal attributes: `base_url` (root domain for requests), `endpoints` (list of relative paths), `session` (persistent requests.Session), and `data` (empty list for parsed results).  
+class PropertyListScraper {
+    - driver: webdriver.Chrome
+    + __init__(driver)
+    + extract_links_and_prices() List~Dict~
+}
 
-### **2. Fetching HTML Content**  
-html = scraper.fetch_html(endpoint)  
-For each endpoint, the scraper builds the full URL (`base_url + endpoint`), defines custom request headers (User-Agent, Accept-Language, etc.), sends a GET request using Requests, handles timeout or connection errors, and returns HTML text if successful or an empty string on failure. Key features include a custom User-Agent, configurable timeout (10s), and graceful error handling with try/except blocks.  
+class PropertyDetailScraper {
+    - driver: webdriver.Chrome
+    - normalized_map: dict
+    + __init__(driver)
+    + extract_detail(url, title, price) Dict
+    - _match_label(label_text)
+    - _extract_from_dl(soup)
+    - _extract_from_tables(soup)
+    - _extract_from_lists(soup)
+    - _extract_from_divs(soup)
+}
 
-### **3. Parsing HTML Content**  
-parsed_items = self.parse(html)  
-The `parse()` method is abstract and must be implemented in a subclass. It defines how HTML content will be analyzed (e.g., with BeautifulSoup or regex) and returns a list or dictionary of extracted data. Example: def parse(self, html): soup = BeautifulSoup(html, "html.parser"); return [{"title": tag.text} for tag in soup.find_all("h2")]  
+class PropertyExporter {
+    + ensure_folder_exists()
+    + save_files(sales_data: List~Dict~, rentals_data: List~Dict~)
+    + save_json(data: List~Dict~, filename: str)
+}
 
-### **4. Data Aggregation**  
-self.data.extend(parsed_items)  
-Accumulates all parsed results into `self.data`, handles both single dictionaries and lists of dictionaries, ensuring all parsed information is collected for export.  
+%% ==== RELACIONES ====
+Scraper <|-- WikiScraper
+Scraper <|-- RealEstateScraper
 
-### **5. Data Export**  
-scraper.save_data("output.json", folder="data")  
-Saves data to JSON: checks if data exists, verifies/creates the folder, serializes to UTF-8 JSON, saves the file, and prints a confirmation message. If no data exists, prints "No data to save." Example path: `data/output.json`.  
+MainApp --> WikiScraper : uses
+MainApp --> RealEstateScraper : uses
+Scraper --> FileManager : uses
 
-### **6. Main Orchestration (run)**  
-scraper.run()  
-Execution steps: verifies endpoints, iterates over each endpoint (fetches HTML, parses it, appends to `self.data`), and prints the total number of items collected.  
+%% ==== NUEVAS RELACIONES ====
+RealEstateScraper --> WebDriverController : controls
+RealEstateScraper --> PropertyListScraper : uses
+RealEstateScraper --> PropertyDetailScraper : uses
+RealEstateScraper --> PropertyExporter : uses
+PropertyDetailScraper --> WebDriverController : uses driver
+PropertyListScraper --> WebDriverController : uses driver
+>>>>>>> b14309afb9a099535bbd500459d600aa8868b485
 
-## **Key Features of the Flow**  
-- Modular Architecture: `Scraper` acts as a base class to be extended; promotes code reuse and separation of logic.  
-- Robust Request Handling: can be extended with retries; uses persistent session for headers/cookies.  
-- Flexible Output: JSON for easy integration; extendable to CSV, XML, or databases.  
-- Separation of Concerns: `fetch_html()` handles requests, `parse()` handles extraction, `save_data()` handles persistence, `run()` orchestrates workflow.  
-
-## **Data Flow**  
-Base URL + Endpoints → Fetch HTML → Parse Data → Aggregate Results → Export JSON (data/output.json)  
-
-## **Configuration and Limits**  
-- Timeout: 10 seconds per request  
-- Folder: "data" auto-created if missing  
-- Output format: UTF-8 JSON  
-- Custom headers: browser-like defaults  
-
-
-# **RealEstateScraper Code Flow**  
-## **Executive Summary**
-
-This is an automated web scraper that extracts real estate property information using **Selenium** for dynamic navigation and **BeautifulSoup** for HTML parsing.
-
----
-
-## **Main Execution Flow**
-
-### **1. Initialization**
-```python
-scraper = RealEstateScraper()  # → _init_ is executed
-```
-
-- Configures the WebDriver with options to avoid detection  
-- Initializes components: `list_scraper`, `detail_scraper`  
-- Defines data structures: `sales_data`, `rentals_data`, `processed_urls`
-
----
-
-### **2. Main Execution (run())**
-```python
-scraper.run()  # → Main orchestration method
 ```
 
 #### **2.1 Section Configuration**
