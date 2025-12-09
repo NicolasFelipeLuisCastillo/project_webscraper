@@ -206,8 +206,42 @@ classDiagram
     DetailScraper ..> Helpers : uses
     ProjectScraper ..> Helpers : uses
 ```
+---
 
---- 
+## Carpeta principal del código /src
+``` css
+src/
+│
+├── main.py
+└── models/
+```
+
+### Archivo main.py
+Ofrece un menú interactivo:
+
+- Ejecutar Properati Scraper
+- Ejecutar WikiScraper
+- Ejecutar RealEstateScraper (bogotarealestate)
+
+---
+
+## Carpeta /src/models
+``` css
+models/
+│
+├── realestate_scraper.py
+├── wiki_scraper.py
+└── properati_scraper/
+
+```
+### Archivo wiki_scraper.py
+Un scraper minimalista que muestra cómo usar:
+
+- Requests
+- BeautifulSoup
+- La clase base Scraper
+
+Descarga páginas de Wikipedia, extrae título y contenido y devuelve un csv.
 
 
 ## Flujo wiki_scraper.py
@@ -239,6 +273,26 @@ flowchart TD
 
 ```
 
+---
+## Carpeta properati_scraper/ -> Scraper inmboliario (Properati)
+``` css
+properati_scraper/
+│
+├── config.py
+├── drivers.py
+├── properati_main.py
+│
+├── scrapers/
+│   ├── base_scraper.py
+│   ├── listing_scraper.py
+│   ├── detail_scraper.py
+│   └── project_scraper.py
+│
+└── utils/
+    ├── helpers.py
+    └── file_handlers.py
+
+```
 ## Flujo drivers.py
 
 ``` mermaid
