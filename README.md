@@ -389,8 +389,8 @@ Orquesta el scraper completo de Properati.
 
 Contiene:
 - Clase ProperatiScraper (motor principal)
-
 Funciones:
+
 **1. Inicialización**
 
 Crea:
