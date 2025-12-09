@@ -68,7 +68,7 @@ src/
    └── __init__.py
 ```
 
-## Class Diagram
+## Diagrama de clases
 ``` mermaid
 classDiagram
     %% Base Classes
@@ -197,6 +197,9 @@ classDiagram
     DetailScraper ..> Helpers : uses
     ProjectScraper ..> Helpers : uses
 ```
+
+--- 
+
 ## Flujo wiki_scraper.py
 
 ``` mermaid
