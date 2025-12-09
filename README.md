@@ -391,7 +391,7 @@ Contiene:
 - Clase ProperatiScraper (motor principal)
 
 Funciones:
-1. Inicialización
+**1. Inicialización**
 
 Crea:
    - WebDriverController
@@ -407,7 +407,7 @@ Define parámetros:
    - headless
    - scraping de unidades en proyectos
 
-2. _handle_captcha()
+**2. _handle_captcha()**
 
 Cuando detecta CAPTCHA:
    - espera 3–5 minutos
@@ -416,7 +416,7 @@ Cuando detecta CAPTCHA:
    - continúa donde quedó
 Robustez real de un scraper profesional.
 
-3. _save_data_incremental()
+**3. _save_data_incremental()**
 
 Guarda cada:
    - X propiedades
@@ -426,7 +426,7 @@ Guarda cada:
 
 Evita pérdida total si Selenium falla.
 
-4. run() — flujo principal
+**4. run() — flujo principal**
 
 - 1. recorre páginas de venta / arriendo
 - 2. extrae enlaces
@@ -447,7 +447,7 @@ Evita pérdida total si Selenium falla.
 
 Este método integra todas las piezas del sistema.
 
-5. main()
+**5. main()**
 
 Permite ejecutar el scraper directamente como:
 
@@ -458,6 +458,7 @@ Configura:
 - páginas
 - modo de scraping
 - frecuencia de requests
+  
 ### Flujo properati_main.py
 ``` mermaid
 flowchart TD
