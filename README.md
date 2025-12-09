@@ -24,6 +24,44 @@ All information is displayed on the console, but the architecture is prepared to
 - Storage of cleaned and processed data in structured format (CSV).
 - Modularity and extensibility through classes and inheritance.
 
+## Estructura del proyecto
+
+``` css
+src/
+   ├── main.py
+   │
+   ├── models/
+   │   ├── __init__.py
+   │   │
+   │   ├── realestate_scraper.py
+   │   │
+   │   ├── wiki_scraper.py
+   │   │
+   │   └── properati_scraper/
+   │       ├── __init__.py
+   │       │
+   │       ├── config.py
+   │       ├── drivers.py
+   │       │
+   │       ├── scrapers/
+   │       │   ├── __init__.py
+   │       │   ├── base_scraper.py
+   │       │   ├── listing_scraper.py
+   │       │   ├── detail_scraper.py
+   │       │   └── project_scraper.py
+   │       │
+   │       ├── utils/
+   │       │   ├── __init__.py
+   │       │   ├── helpers.py
+   │       │   └── file_handlers.py
+   │       │
+   │       └── properati_main.py
+   │
+   └── __init__.py
+```
+
+
+
 ## Class Diagram
 ``` mermaid
 classDiagram
@@ -43,7 +81,7 @@ class Scraper {
     + run()
 }
 
-<<<<<<< HEAD
+%% ==== COMPONENTES PRINCIPALES ====
 class SeleniumBaseScraper {
     - driver
     + __init__(driver)
@@ -65,17 +103,12 @@ class ProperatiScraper {
     - properties_processed: int
     - backup_counter: int
     + __init__(mode, max_pages, headless, requests_per_minute, scrape_project_units)
-=======
-%% ==== SUBCLASES ====
-class WikiScraper {
->>>>>>> b14309afb9a099535bbd500459d600aa8868b485
     + parse(html)
     + _handle_captcha()
     + _save_data_incremental(new_properties_count, force_save)
     + run()
 }
 
-<<<<<<< HEAD
 class WebDriverController {
     - headless: bool
     - driver
@@ -89,27 +122,6 @@ class ListingScraper {
     + extract_links_from_soup(soup) list
     + extract_links(url) list
     + check_pagination_limit(soup, page_num) bool
-=======
-class RealEstateScraper {
-    - ctrl: WebDriverController
-    - list_scraper: PropertyListScraper
-    - detail_scraper: PropertyDetailScraper
-    - save_every: int
-    - sales_data: list
-    - rentals_data: list
-    - processed_urls: set
-    + __init__(save_every)
-    + parse(html)
-    + fetch_html(endpoint)
-    + run()
-    + save_data(filename, folder)
-}
-
-%% ==== COMPONENTES AUXILIARES ====
-class Parser {
-    + extract_text(html)
-    + extract_links(html)
->>>>>>> b14309afb9a099535bbd500459d600aa8868b485
 }
 
 class DetailScraper {
@@ -133,7 +145,6 @@ class ProjectScraper {
     + scrape_project_with_units(project_url) list
 }
 
-<<<<<<< HEAD
 class DataHandler {
     - csv_filename: str
     - json_filename: str
@@ -173,33 +184,6 @@ class Config {
     - CAPTCHA_INDICATORS: list
 }
 
-Scraper <|-- ProperatiScraper
-SeleniumBaseScraper <|-- ListingScraper
-SeleniumBaseScraper <|-- DetailScraper
-SeleniumBaseScraper <|-- ProjectScraper
-
-ProperatiScraper --> WebDriverController : composes
-ProperatiScraper --> DataHandler : composes
-ProperatiScraper --> ListingScraper : composes
-ProperatiScraper --> DetailScraper : composes
-ProperatiScraper --> ProjectScraper : composes
-
-ListingScraper --> Helpers : uses
-DetailScraper --> Helpers : uses
-ProjectScraper --> Helpers : uses
-ProperatiScraper --> Helpers : uses
-
-Config --> Helpers : provides
-Config --> ListingScraper : provides
-Config --> DetailScraper : provides
-Config --> ProjectScraper : provides
-Config --> ProperatiScraper : provides
-
-DataHandler --> ProperatiScraper : used_by
-WebDriverController --> ListingScraper : provides_driver
-WebDriverController --> DetailScraper : provides_driver
-WebDriverController --> ProjectScraper : provides_driver
-
 class PropertyData {
     + URL: str
     + Title: str
@@ -230,192 +214,31 @@ class PropertyData {
     + Is_Project_Unit: str
 }
 
-DetailScraper --> PropertyData : creates
-ProjectScraper --> PropertyData : creates
-```
-# **Base Scraper Code Flow**  
-## **Executive Summary**  
-This is a modular and extensible HTTP-based web scraper designed to fetch and process HTML content from one or more endpoints. It uses the Requests library for network communication and stores the extracted data as JSON files. The scraper is implemented using an object-oriented base class (`Scraper`), which can be easily subclassed for specific use cases (e.g., parsing product pages, news articles, or APIs).  
-=======
-%% ==== CLASES NUEVAS ====
-class WebDriverController {
-    - driver
-    + __init__()
-    + setup_driver()
-    + close()
-}
-
-class PropertyListScraper {
-    - driver: webdriver.Chrome
-    + __init__(driver)
-    + extract_links_and_prices() List~Dict~
-}
-
-class PropertyDetailScraper {
-    - driver: webdriver.Chrome
-    - normalized_map: dict
-    + __init__(driver)
-    + extract_detail(url, title, price) Dict
-    - _match_label(label_text)
-    - _extract_from_dl(soup)
-    - _extract_from_tables(soup)
-    - _extract_from_lists(soup)
-    - _extract_from_divs(soup)
-}
-
-class PropertyExporter {
-    + ensure_folder_exists()
-    + save_files(sales_data: List~Dict~, rentals_data: List~Dict~)
-    + save_json(data: List~Dict~, filename: str)
-}
-
 %% ==== RELACIONES ====
-Scraper <|-- WikiScraper
-Scraper <|-- RealEstateScraper
+Scraper <|-- ProperatiScraper
+SeleniumBaseScraper <|-- ListingScraper
+SeleniumBaseScraper <|-- DetailScraper
+SeleniumBaseScraper <|-- ProjectScraper
 
-MainApp --> WikiScraper : uses
-MainApp --> RealEstateScraper : uses
-Scraper --> FileManager : uses
+ProperatiScraper --> WebDriverController
+ProperatiScraper --> DataHandler
+ProperatiScraper --> ListingScraper
+ProperatiScraper --> DetailScraper
+ProperatiScraper --> ProjectScraper
 
-%% ==== NUEVAS RELACIONES ====
-RealEstateScraper --> WebDriverController : controls
-RealEstateScraper --> PropertyListScraper : uses
-RealEstateScraper --> PropertyDetailScraper : uses
-RealEstateScraper --> PropertyExporter : uses
-PropertyDetailScraper --> WebDriverController : uses driver
-PropertyListScraper --> WebDriverController : uses driver
->>>>>>> b14309afb9a099535bbd500459d600aa8868b485
+ListingScraper --> Helpers
+DetailScraper --> Helpers
+ProjectScraper --> Helpers
+ProperatiScraper --> Helpers
+
+Config --> Helpers
+Config --> ListingScraper
+Config --> DetailScraper
+Config --> ProjectScraper
+Config --> ProperatiScraper
+
+DetailScraper --> PropertyData
+ProjectScraper --> PropertyData
 
 ```
 
-#### **2.1 Section Configuration**
-```python
-sections = {
-    "Sales": "sales_search_URL",
-    "Rentals": "rentals_search_URL"
-}
-```
-
-#### **2.2 Loop Through Sections and Pages**
-```text
-For each section (Sales/Rentals):
-    │
-    ├── For each page (up to MAX_PAGES):
-    │   │
-    │   ├── Build page URL
-    │   ├── Navigate with Selenium
-    │   ├── Wait for load using WebDriverWait
-    │   ├── Simulated human pause
-    │   │
-    │   └── Extract properties from list:
-    │       │
-    │       └── For each property in the list:
-    │           │
-    │           ├── Check for duplicates
-    │           ├── Navigate to detail page
-    │           ├── Extract detailed information
-    │           ├── Normalize and map fields
-    │           └── Store in the corresponding list
-    │
-    └── End section
-```
-|
-
----
-
-### **3. Listing Processing (PropertyListScraper)**
-```python
-extract_links_and_prices()  # → Extracts from listing pages
-```
-
-- Finds property cards using multiple CSS selectors  
-- Extracts: URL, title, price  
-- Normalizes relative URLs to absolute  
-- Uses fallbacks when expected elements are not found
-
----
-
-### **4. Detail Processing (PropertyDetailScraper)**
-```python
-extract_detail(url, title, price)  # → Extracts complete information
-```
-
-- Navigates to the property’s individual page  
-- Attempts multiple extraction strategies:
-  - Definition lists (`<dl><dt><dd>`)
-  - Tables (`<table><tr><td>`)
-  - Unordered lists (`<ul><li>`)
-  - Divs with specific patterns  
-- Maps Spanish → English fields using `FIELD_MAP`  
-- Handles errors with retries (`MAX_RETRIES`)
-
----
-
-### **5. Data Export (PropertyExporter)**
-```python
-save_files(sales_data, rentals_data)  # → Saves results
-```
-
-- Creates CSV files: sales, rentals, combined  
-- Generates a JSON file with all data  
-- Folder structure: `realestate_data/`
-
----
-
-## **Key Features of the Flow**
-
-### **Navigation Handling**
-- Human-like pauses with random delays  
-- Explicit waits for critical elements  
-- Automatic retries on failures  
-- Duplicate control using `processed_urls`
-
----
-
-### **Multiple Extraction Strategies**
-```python
-# Four different methods to find data
-extraction_methods = [
-    self._extract_from_dl,      # Definition lists
-    self._extract_from_tables,  # HTML tables
-    self._extract_from_lists,   # Unordered lists
-    self._extract_from_divs     # Divs with specific patterns
-]
-```
-
----
-
-### **Intelligent Field Mapping**
-```python
-FIELD_MAP = {
-    "país": "Country",
-    "departamento": "State", 
-    "ciudad": "City",
-    "área construida": "Built Area",
-    # ... more mappings
-}
-```
-
----
-
-### **Robust Error Handling**
-- Retries on loading failures  
-- Partial data saving on critical errors  
-- Detailed logging for debugging  
-- Continues after individual errors
-
----
-
-## **Data Flow**
-```text
-Base URLs → Property Lists → Detail Pages → 
-Normalized Data → CSV/JSON Files
-```
-
----
-
-## **Configuration and Limits**
-- `MAX_PAGES = 1` (for testing only)  
-- `SAVE_BATCH = 5` (how often to save)  
-- `MAX_RETRIES = 3` (retries per property)  
-- Human-like pauses between **3.5–4.5 seconds**
