@@ -34,8 +34,29 @@ Para este proyecto se utilizó la metodología scrum realizando 2 sprints en el 
 
 ---
 
-## Cómo ejecutar?
-Ejecutar en la terminal:
+## Cómo instalar y ejecutar?
+### Clonar el repositorio desde github
+``` git
+git clone 
+```
+### Entrar al proyecto
+``` git
+cd project_webscraper
+```
+### Crear un entorno virtual
+En terminal
+``` bash
+python -m venv venv 
+```
+Activarlo
+``` bash
+venv\Scripts\activate 
+```
+### Instalar dependendencias
+``` bash
+pip install -r requiriments.txt 
+```
+### Ejecutar en la terminal:
 ``` bash
 python -m src.main
 ```
