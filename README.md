@@ -68,8 +68,6 @@ src/
    └── __init__.py
 ```
 
-
-
 ## Class Diagram
 ``` mermaid
 classDiagram
@@ -249,4 +247,314 @@ DetailScraper --> PropertyData
 ProjectScraper --> PropertyData
 
 ```
+## Flujo wiki_scraper.py
+
+``` mermaid
+flowchart TD
+
+    A[WikiScraper inicia] --> B[Recibir base_url y endpoints]
+    B --> C[Iterar endpoints]
+
+    C --> D[fetch_html con requests]
+    D --> E{Hubo error?}
+    E -->|Si| F[Retornar dict con error]
+    E -->|No| G[Pasar HTML a parse]
+
+    G --> H[Crear BeautifulSoup]
+    H --> I[Obtener titulo de h1]
+    I --> J[Obtener contenedor principal]
+
+    J --> K[Extraer parrafos]
+    K --> L[Combinar texto]
+
+    L --> M[Construir dict con title y content]
+    M --> N[Agregar resultado a lista data]
+
+    N --> O{Quedan endpoints?}
+    O -->|Si| C
+    O -->|No| P[Retornar data final]
+
+```
+
+## Flujo drivers.py
+
+``` mermaid
+flowchart TD
+
+    A[Crear instancia WebDriverController] --> B[Init controlador]
+    B --> C[Llamar a create driver]
+
+    C --> D[Configurar ChromeOptions]
+    D --> E[Agregar flags y opciones]
+
+    E --> F[Aplicar anti deteccion]
+    F --> G[Inicializar Chrome con driver]
+
+    G --> H[Agregar script para ocultar webdriver]
+    H --> I[Driver Selenium listo]
+
+    I --> J[ListingScraper usa driver]
+    I --> K[DetailScraper usa driver]
+    I --> L[ProjectScraper usa driver]
+
+    J --> M[Acceso Selenium]
+    K --> M
+    L --> M
+
+    M --> N{Captcha?}
+
+    N -->|Si| O[Cerrar driver]
+    O --> P[Recrear WebDriverController]
+    P --> C
+
+    N -->|No| Q[Continuar scraping]
+
+    Q --> R[Cierre final del driver]
+```
+## Flujo listing_scraper.py
+
+``` mermaid
+flowchart TD
+
+    A[ListingScraper inicia] --> B[Recibir driver]
+    B --> C[Cargar pagina de listado]
+    C --> D[Scroll en pagina]
+    D --> E[Obtener HTML page_source]
+
+    E --> F[Parsear con BeautifulSoup]
+    F --> G[Extraer links de propiedades y proyectos]
+
+    G --> H{Hay paginacion extra?}
+    H -->|Si| I[Continuar paginas]
+    H -->|No| J[Detener]
+
+    I --> C
+    J --> K[Retornar lista de links]
+
+```
+## Flujo detail_scraper.py
+
+``` mermaid
+flowchart TD
+
+    A[DetailScraper inicia] --> B[Recibir driver]
+    B --> C[Acceder a URL propiedad]
+
+    C --> D[Detectar captcha]
+    D -->|Captcha| E[Retornar None]
+
+    D -->|OK| F[Obtener HTML]
+    F --> G[Parsear con BeautifulSoup]
+
+    G --> H[Extraer datos: precio, area, cuartos]
+    H --> I[Extraer datos: banos, garajes]
+    I --> J[Extraer descripcion y amenities]
+
+    J --> K{Es proyecto?}
+    K -->|Si| L[Retornar indicador de proyecto]
+    K -->|No| M[Retornar dict propiedad]
+
+```
+## Flujo project_scraper.py
+
+``` mermaid
+flowchart TD
+
+    A[ProjectScraper inicia] --> B[Acceder a URL de proyecto]
+
+    B --> C[Detectar captcha]
+    C -->|Captcha| D[Retornar None]
+
+    C -->|OK| E[Obtener HTML principal]
+
+    E --> F[Extraer datos generales del proyecto]
+    F --> G[Extraer lista de unidades]
+
+    G --> H[Iterar unidades]
+    H --> I[Scrapear unidad]
+    I --> J[Agregar unidad al dataset]
+
+    J --> K{Quedan unidades?}
+    K -->|Si| H
+    K -->|No| L[Retornar lista de unidades]
+
+    L --> M[Incluir datos del proyecto en las unidades]
+
+```
+## Flujo properati_main.py
+
+``` mermaid
+flowchart TD
+
+    A[ProperatiScraper inicia] --> B[Crear WebDriverController]
+    B --> C[Crear ListingScraper DetailScraper ProjectScraper]
+    C --> D[Definir modo venta arriendo]
+
+    D --> E[Recorrer secciones]
+    E --> F[Recorrer paginas]
+
+    F --> G[Construir URL]
+    G --> H[Scrape con proteccion captcha]
+
+    H --> I{Captcha?}
+    I -->|Si| J[Manejar captcha]
+    J --> K[Reiniciar driver]
+    K --> F
+
+    I -->|No| L[Parsear con BeautifulSoup]
+    L --> M[Extraer links]
+
+    M --> N{Hay links?}
+    N -->|No| O[Pasar a siguiente pagina]
+    N -->|Si| P[Procesar cada link]
+
+    P --> Q{Es proyecto?}
+    Q -->|Si| R[Scrapear proyecto con unidades]
+    Q -->|No| S[Scrapear propiedad individual]
+
+    R --> T[Guardar data incremental]
+    S --> T
+
+    T --> U[Acumular propiedades]
+    U --> F
+
+    F --> V[Fin de paginas]
+    V --> W[Guardar data final]
+    W --> X[Guardar estadisticas]
+    X --> Y[Cerrar driver]
+
+```
+## Flujo helpers.py
+
+``` mermaid
+flowchart TD
+
+    A[helpers.py] --> B[safe_extract]
+    B --> C[Intentar selector primario]
+    C --> D{Existe valor?}
+    D -->|Si| E[Retornar texto]
+    D -->|No| F[Intentar selectores alternos]
+    F --> E
+
+    A --> G[extract_numeric_value]
+    G --> H[Limpiar texto]
+    H --> I[Buscar numeros]
+    I --> J[Retornar numero o None]
+
+    A --> K[extract_business_type]
+    K --> L[Buscar palabras clave venta arriendo]
+    L --> M[Retornar tipo]
+
+    A --> N[detect_captcha]
+    N --> O[Buscar patrones captcha]
+    O --> P[Retornar True o False]
+
+    A --> Q[human_pause]
+    Q --> R[Calcular pausa aleatoria]
+    R --> S[time.sleep]
+
+```
+## Flujo file_handlers.py
+
+``` mermaid
+flowchart TD
+
+    A[file_handlers.py] --> B[save_data]
+    B --> C[Generar nombre archivo]
+    C --> D[Guardar JSON]
+    C --> E[Guardar CSV]
+
+    A --> F[log_statistics]
+    F --> G[Contar propiedades]
+    G --> H[Contar proyectos]
+    H --> I[Guardar reporte txt]
+
+    A --> J[ensure_folder]
+    J --> K[Crear carpeta si no existe]
+
+    A --> L[create_unique_filename]
+    L --> M[Agregar timestamp]
+    M --> N[Retornar nombre unico]
+
+```
+## Diagrama de clase de properati simple
+
+``` mermaid
+classDiagram
+
+    class WebDriverController {
+        +driver
+        +headless
+        +create_driver()
+        +close()
+        +restart()
+    }
+
+    class ListingScraper {
+        +driver
+        +extract_links()
+        +check_pagination_limit()
+    }
+
+    class DetailScraper {
+        +driver
+        +scrape_property()
+        +scrape_with_captcha()
+    }
+
+    class ProjectScraper {
+        +driver
+        +scrape_project_with_units()
+    }
+
+    class DataHandler {
+        +save_data()
+        +log_statistics()
+        +unique_filename()
+    }
+
+    class ProperatiScraper {
+        +run()
+        +handle_captcha()
+        +save_incremental()
+    }
+
+    ProperatiScraper --> WebDriverController
+    ProperatiScraper --> ListingScraper
+    ProperatiScraper --> DetailScraper
+    ProperatiScraper --> ProjectScraper
+    ProperatiScraper --> DataHandler
+
+```
+## Diagrama de secuencia
+
+``` mermaid
+sequenceDiagram
+    participant P as ProperatiScraper
+    participant D as WebDriverController
+    participant L as ListingScraper
+    participant T as DetailScraper
+    participant J as ProjectScraper
+    participant H as DataHandler
+
+    P ->> D: Crear driver
+    P ->> L: Extraer links de pagina
+    L ->> D: driver.get(url)
+    L ->> P: Retornar lista de links
+
+    loop por cada link
+        P ->> T: Scrapear propiedad
+        T ->> D: driver.get(link)
+        T ->> P: Retornar dict propiedad
+
+        P ->> H: Guardar incremental
+        H ->> P: Confirmar guardado
+    end
+
+    P ->> H: Guardado final
+    H ->> P: Confirmar
+    P ->> D: Cerrar driver
+
+```
+
 
