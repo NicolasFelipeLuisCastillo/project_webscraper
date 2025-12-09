@@ -391,7 +391,7 @@ Contiene:
 - Clase ProperatiScraper (motor principal)
 
 Funciones:
-- 1. Inicialización
+1. Inicialización
 
 Crea:
    - WebDriverController
@@ -407,7 +407,7 @@ Define parámetros:
    - headless
    - scraping de unidades en proyectos
 
-- 2. _handle_captcha()
+2. _handle_captcha()
 
 Cuando detecta CAPTCHA:
    - espera 3–5 minutos
@@ -416,7 +416,7 @@ Cuando detecta CAPTCHA:
    - continúa donde quedó
 Robustez real de un scraper profesional.
 
-- 3. _save_data_incremental()
+3. _save_data_incremental()
 
 Guarda cada:
    - X propiedades
@@ -426,47 +426,80 @@ Guarda cada:
 
 Evita pérdida total si Selenium falla.
 
-- 4. run() — flujo principal
+4. run() — flujo principal
 
-1. recorre páginas de venta / arriendo
+- 1. recorre páginas de venta / arriendo
+- 2. extrae enlaces
+- 3. maneja CAPTCHA
+- 4. procesa:
 
-2. extrae enlaces
+   - proyectos completos
 
-3. maneja CAPTCHA
+   - propiedades individuales
 
-4. procesa:
+- 5. pausa entre requests para evitar bloqueo
 
-- proyectos completos
+- 6. guarda incremental
 
-- propiedades individuales
+- 7. guarda todo al final
 
-5. pausa entre requests para evitar bloqueo
-
-6. guarda incremental
-
-7. guarda todo al final
-
-8. cierra Selenium
+- 8. cierra Selenium
 
 Este método integra todas las piezas del sistema.
 
-🔹 5. main()
+5. main()
 
 Permite ejecutar el scraper directamente como:
 
 python properati_main.py
 
-
 Configura:
+- logging
+- páginas
+- modo de scraping
+- frecuencia de requests
+### Flujo properati_main.py
+``` mermaid
+flowchart TD
 
-logging
+    A[ProperatiScraper inicia] --> B[Crear WebDriverController]
+    B --> C[Crear ListingScraper DetailScraper ProjectScraper]
+    C --> D[Definir modo venta arriendo]
 
-páginas
+    D --> E[Recorrer secciones]
+    E --> F[Recorrer paginas]
 
-modo de scraping
+    F --> G[Construir URL]
+    G --> H[Scrape con proteccion captcha]
 
-frecuencia de requests
+    H --> I{Captcha?}
+    I -->|Si| J[Manejar captcha]
+    J --> K[Reiniciar driver]
+    K --> F
 
+    I -->|No| L[Parsear con BeautifulSoup]
+    L --> M[Extraer links]
+
+    M --> N{Hay links?}
+    N -->|No| O[Pasar a siguiente pagina]
+    N -->|Si| P[Procesar cada link]
+
+    P --> Q{Es proyecto?}
+    Q -->|Si| R[Scrapear proyecto con unidades]
+    Q -->|No| S[Scrapear propiedad individual]
+
+    R --> T[Guardar data incremental]
+    S --> T
+
+    T --> U[Acumular propiedades]
+    U --> F
+
+    F --> V[Fin de paginas]
+    V --> W[Guardar data final]
+    W --> X[Guardar estadisticas]
+    X --> Y[Cerrar driver]
+
+```
 ## Flujo listing_scraper.py
 
 ``` mermaid
@@ -539,47 +572,7 @@ flowchart TD
 ```
 ## Flujo properati_main.py
 
-``` mermaid
-flowchart TD
 
-    A[ProperatiScraper inicia] --> B[Crear WebDriverController]
-    B --> C[Crear ListingScraper DetailScraper ProjectScraper]
-    C --> D[Definir modo venta arriendo]
-
-    D --> E[Recorrer secciones]
-    E --> F[Recorrer paginas]
-
-    F --> G[Construir URL]
-    G --> H[Scrape con proteccion captcha]
-
-    H --> I{Captcha?}
-    I -->|Si| J[Manejar captcha]
-    J --> K[Reiniciar driver]
-    K --> F
-
-    I -->|No| L[Parsear con BeautifulSoup]
-    L --> M[Extraer links]
-
-    M --> N{Hay links?}
-    N -->|No| O[Pasar a siguiente pagina]
-    N -->|Si| P[Procesar cada link]
-
-    P --> Q{Es proyecto?}
-    Q -->|Si| R[Scrapear proyecto con unidades]
-    Q -->|No| S[Scrapear propiedad individual]
-
-    R --> T[Guardar data incremental]
-    S --> T
-
-    T --> U[Acumular propiedades]
-    U --> F
-
-    F --> V[Fin de paginas]
-    V --> W[Guardar data final]
-    W --> X[Guardar estadisticas]
-    X --> Y[Cerrar driver]
-
-```
 ## Flujo helpers.py
 
 ``` mermaid
