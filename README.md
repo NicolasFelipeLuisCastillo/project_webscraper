@@ -313,7 +313,46 @@ properati_scraper/
     └── file_handlers.py
 
 ```
+
+### Archivo config.py
+
 ## Flujo drivers.py
+Contiene:
+- URL base: https://www.properati.com.co
+- Selectores CSS para:
+   - precio
+   - título
+   - barrio
+   - área
+   - habitaciones
+   - baños
+   - garajes
+
+- Configuración Selenium
+- Límite de páginas
+- Palabras clave
+- Carpetas de datos
+  
+Es donde se edita el scraper sin tocar el código.
+
+---
+
+### Archivo drivers.py -> Control de Selenium
+Responsable de:
+
+- Inicializar Chrome
+Con headless o no.
+
+- Configurar:
+   - user-agent
+   - anti-detección
+   - opciones stealth
+
+- Reiniciar el driver
+Si ocurre un CAPTCHA.
+
+- Cerrar el navegador
+
 
 ``` mermaid
 flowchart TD
