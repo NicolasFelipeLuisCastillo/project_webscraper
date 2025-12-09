@@ -382,6 +382,90 @@ flowchart TD
 
     Q --> R[Cierre final del driver]
 ```
+---
+### Archivo properati_main.py
+
+Orquesta el scraper completo de Properati.
+
+Contiene:
+- Clase ProperatiScraper (motor principal)
+
+Funciones:
+- 1. Inicialización
+
+Crea:
+   - WebDriverController
+   - ListingScraper
+   - DetailScraper
+   - ProjectScraper
+   - DataHandler
+
+Define parámetros:
+   - modo (venta / arriendo / todos)
+   - páginas máximas
+   - requests por minuto
+   - headless
+   - scraping de unidades en proyectos
+
+- 2. _handle_captcha()
+
+Cuando detecta CAPTCHA:
+   - espera 3–5 minutos
+   - reinicia Selenium
+   - reinstancia los scrapers
+   - continúa donde quedó
+Robustez real de un scraper profesional.
+
+- 3. _save_data_incremental()
+
+Guarda cada:
+   - X propiedades
+   - cada proyecto
+   - cada página
+   - cada error
+
+Evita pérdida total si Selenium falla.
+
+- 4. run() — flujo principal
+
+1. recorre páginas de venta / arriendo
+
+2. extrae enlaces
+
+3. maneja CAPTCHA
+
+4. procesa:
+
+- proyectos completos
+
+- propiedades individuales
+
+5. pausa entre requests para evitar bloqueo
+
+6. guarda incremental
+
+7. guarda todo al final
+
+8. cierra Selenium
+
+Este método integra todas las piezas del sistema.
+
+🔹 5. main()
+
+Permite ejecutar el scraper directamente como:
+
+python properati_main.py
+
+
+Configura:
+
+logging
+
+páginas
+
+modo de scraping
+
+frecuencia de requests
 
 ## Flujo listing_scraper.py
 
