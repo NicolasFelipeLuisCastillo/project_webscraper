@@ -242,7 +242,6 @@ Ofrece un menú interactivo:
 
 - Ejecutar Properati Scraper
 - Ejecutar WikiScraper
-- Ejecutar RealEstateScraper (bogotarealestate)
 
 ---
 
