@@ -9,7 +9,7 @@ import re
 import logging
 
 from bs4 import BeautifulSoup
-from ..config import HUMAN_PAUSE_BASE, HUMAN_PAUSE_JITTER
+from src.models.properati_scraper.config import HUMAN_PAUSE_BASE, HUMAN_PAUSE_JITTER
 
 
 def ensure_folder_exists(folder_path):
@@ -134,6 +134,6 @@ def detect_captcha(html):
     soup = BeautifulSoup(html, "html.parser")
     page_text = soup.get_text().lower()
 
-    from config import CAPTCHA_INDICATORS
+    from src.models.properati_scraper.config import CAPTCHA_INDICATORS
 
     return any(indicator.lower() in page_text for indicator in CAPTCHA_INDICATORS)

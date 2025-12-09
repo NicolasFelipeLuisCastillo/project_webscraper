@@ -8,7 +8,7 @@ import logging
 import pandas as pd
 from datetime import datetime
 
-from ..config import DATA_FOLDER
+from src.models.properati_scraper.config import DATA_FOLDER
 
 
 class DataHandler:

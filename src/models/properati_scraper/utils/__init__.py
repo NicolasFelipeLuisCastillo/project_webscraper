@@ -2,7 +2,7 @@
 Utility modules for Properati scraper.
 """
 
-from .helpers import (
+from src.models.properati_scraper.utils.helpers import (
     ensure_folder_exists,
     human_pause,
     safe_extract,
@@ -10,7 +10,7 @@ from .helpers import (
     extract_business_type,
     detect_captcha,
 )
-from .file_handlers import DataHandler
+from src.models.properati_scraper.utils.file_handlers import DataHandler
 
 __all__ = [
     "ensure_folder_exists",

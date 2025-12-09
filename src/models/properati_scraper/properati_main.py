@@ -17,14 +17,17 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
 # Now use absolute imports
-from models.properati_scraper.drivers import WebDriverController
-from models.properati_scraper.scrapers.base_scraper import Scraper, SeleniumBaseScraper
-from models.properati_scraper.scrapers.listing_scraper import ListingScraper
-from models.properati_scraper.scrapers.detail_scraper import DetailScraper
-from models.properati_scraper.scrapers.project_scraper import ProjectScraper
-from models.properati_scraper.utils.helpers import ensure_folder_exists, human_pause
-from models.properati_scraper.utils.file_handlers import DataHandler
-from models.properati_scraper.config import (
+from src.models.properati_scraper.drivers import WebDriverController
+from src.models.properati_scraper.scrapers.base_scraper import (
+    Scraper,
+    SeleniumBaseScraper,
+)
+from src.models.properati_scraper.scrapers.listing_scraper import ListingScraper
+from src.models.properati_scraper.scrapers.detail_scraper import DetailScraper
+from src.models.properati_scraper.scrapers.project_scraper import ProjectScraper
+from src.models.properati_scraper.utils.helpers import ensure_folder_exists, human_pause
+from src.models.properati_scraper.utils.file_handlers import DataHandler
+from src.models.properati_scraper.config import (
     BASE_URL,
     DATA_FOLDER,
     BACKUP_INTERVAL,

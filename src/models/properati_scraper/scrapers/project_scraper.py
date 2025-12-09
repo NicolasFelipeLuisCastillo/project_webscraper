@@ -13,7 +13,7 @@ from src.models.properati_scraper.utils.helpers import (
     extract_numeric_value,
     extract_business_type,
 )
-from ..config import (
+from src.models.properati_scraper.config import (
     BASE_URL,
     BEDROOM_KEYWORDS,
     BATHROOM_KEYWORDS,

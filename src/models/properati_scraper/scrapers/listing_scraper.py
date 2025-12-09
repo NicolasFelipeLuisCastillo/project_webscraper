@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from src.models.properati_scraper.scrapers.base_scraper import SeleniumBaseScraper
-from ..config import BASE_URL, LINK_SELECTORS
+from src.models.properati_scraper.config import BASE_URL, LINK_SELECTORS
 
 
 class ListingScraper(SeleniumBaseScraper):

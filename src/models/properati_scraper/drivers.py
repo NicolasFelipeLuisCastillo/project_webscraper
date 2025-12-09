@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium_stealth import stealth
 from webdriver_manager.chrome import ChromeDriverManager
 
-from .config import DEFAULT_HEADLESS
+from src.models.properati_scraper.config import DEFAULT_HEADLESS
 
 
 class WebDriverController:
