@@ -317,36 +317,36 @@ properati_scraper/
 
 ### Archivo config.py
 Contiene:
--URL base: https://www.properati.com.co
--Selectores CSS para:
-   -precio
-   -título
-   -barrio
-   -área
-   -habitaciones
-   -baños
-   -garajes
--Configuración Selenium
--Límite de páginas
--Palabras clave
--Carpetas de datos
+- URL base: https://www.properati.com.co
+- Selectores CSS para:
+   - precio
+   - título
+   - barrio
+   - área
+   - habitaciones
+   - baños
+   - garajes
+- Configuración Selenium
+- Límite de páginas
+- Palabras clave
+- Carpetas de datos
 
 ---
 ### Archivo drivers.py
--Inicializar Chrome
+- Inicializar Chrome
 Con headless o no.
 
--Configurar:
-   -user-agent
-   -anti-detección
-   -opciones stealth
+- Configurar:
+   - user-agent
+   - anti-detección
+   - opciones stealth
 
--Reiniciar el driver
+- Reiniciar el driver
 Si ocurre un CAPTCHA.
 
--Cerrar el navegador
+- Cerrar el navegador
 
-Capa fundamental de hardware del scraper.
+---
 
 ### Flujo drivers.py
 ``` mermaid
