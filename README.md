@@ -33,8 +33,6 @@ src/
    ├── models/
    │   ├── __init__.py
    │   │
-   │   ├── realestate_scraper.py
-   │   │
    │   ├── wiki_scraper.py
    │   │
    │   └── properati_scraper/
@@ -42,7 +40,8 @@ src/
    │       │
    │       ├── config.py
    │       ├── drivers.py
-   │       │
+   │       ├── properati_main.py
+   |       |
    │       ├── scrapers/
    │       │   ├── __init__.py
    │       │   ├── base_scraper.py
