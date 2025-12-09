@@ -1,28 +1,36 @@
-# Final Project OOP: Web Scraping System in Python
+<img width="781" height="319" alt="c2e1a376-86d6-4ad6-890b-b69256035a48-removebg-preview" src="https://github.com/user-attachments/assets/51cc1d8c-8662-43ac-ba74-73ff38443c5b" />
+# Proyecto Final POO: Sistema de Web Scraping en Python
 
-### National University of Colombia 
-**Course:** Object Oriented Programming  
-**Members:**  
-- Nicolas Felipe Luis Castillo — Object-oriented design and version control 
-- Juan Daniel Egoavil Cardozo — Real estate scraper
-- Maycol David Lopez Largo — Data management and scraper base/wiki 
-
----
-
-## Summary
-This project implements a **web scraping** system in Python, designed using **Object-Oriented Programming (OOP) principles**.
-The system aims to **extract information from Wiki-type sites** and **extract and organize real estate listings from a real estate portal** (e.g., Metrocuadrado, Ciencuadras, Properati, etc.), filtering the results by city or town.
-
-All information is displayed on the console, but the architecture is prepared to be compatible with a future graphical user interface (GUI).
+### Universidad Nacional de Colombia
+**Curso:** Programación Orientada a Objetos
+**Miembros:**
+- Nicolás Felipe Luis Castillo — Diseño orientado a objetos y control de versiones
+- Juan Daniel Egoavil Cardozo — Scraper inmobiliario
+- Maycol David López Largo — Gestión de datos y base/wiki del scraper
 
 ---
 
-## Main Features
+## Resumen
+Este proyecto implementa un sistema de **web scraping** en Python, diseñado con principios de **Programación Orientada a Objetos (POO)**.
+El sistema busca **extraer información de Wikipedia** y **extraer y organizar listados de propiedades de Properati**
 
-- Text extraction from Wiki-type sites (2 or 3 configurable URLs).
-- Extraction and organization of real estate listings from a selected portal.
-- Storage of cleaned and processed data in structured format (CSV).
-- Modularity and extensibility through classes and inheritance.
+Toda la información se muestra en la consola, pero la arquitectura está preparada para ser compatible con una futura interfaz gráfica de usuario (GUI).
+
+---
+
+## Características principales
+
+- Extracción de texto de Wikipedia.
+- Extracción y organización de listados de inmuebles de un portal seleccionado.
+- Almacenamiento de datos limpios y procesados ​​en formato estructurado (CSV).
+- Modularidad y extensibilidad mediante clases y herencia.
+
+---
+
+## Flujo de trabajo
+Para este proyecto se utilizó la metodología scrum realizando 2 sprints en el desarrollo de este mismo. Además, se utilizó clickup para controlar y programarlas tareas de cada uno de los integrantes.
+<img width="1624" height="807" alt="Captura de pantalla 2025-12-06 170822" src="https://github.com/user-attachments/assets/95e1a001-cdca-42e8-8ea0-700091cb91c5" />
+
 
 ## Estructura del proyecto
 
