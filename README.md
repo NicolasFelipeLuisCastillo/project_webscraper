@@ -314,26 +314,59 @@ properati_scraper/
 
 ```
 
+---
+
 ### Archivo config.py
+Contiene:
+-URL base: https://www.properati.com.co
+-Selectores CSS para:
+   -precio
+   -título
+   -barrio
+   -área
+   -habitaciones
+   -baños
+   -garajes
+-Configuración Selenium
+-Límite de páginas
+-Palabras clave
+-Carpetas de datos
+
+---
 
 ## Flujo drivers.py
-Contiene:
-- URL base: https://www.properati.com.co
-- Selectores CSS para:
-   - precio
-   - título
-   - barrio
-   - área
-   - habitaciones
-   - baños
-   - garajes
+``` mermaid
+flowchart TD
 
-- Configuración Selenium
-- Límite de páginas
-- Palabras clave
-- Carpetas de datos
-  
-Es donde se edita el scraper sin tocar el código.
+    A[Crear instancia WebDriverController] --> B[Init controlador]
+    B --> C[Llamar a create driver]
+
+    C --> D[Configurar ChromeOptions]
+    D --> E[Agregar flags y opciones]
+
+    E --> F[Aplicar anti deteccion]
+    F --> G[Inicializar Chrome con driver]
+
+    G --> H[Agregar script para ocultar webdriver]
+    H --> I[Driver Selenium listo]
+
+    I --> J[ListingScraper usa driver]
+    I --> K[DetailScraper usa driver]
+    I --> L[ProjectScraper usa driver]
+
+    J --> M[Acceso Selenium]
+    K --> M
+    L --> M
+
+    M --> N{Captcha?}
+
+    N -->|Si| O[Cerrar driver]
+    O --> P[Recrear WebDriverController]
+    P --> C
+
+    N -->|No| Q[Continuar scraping]
+
+    Q --> R[Cierre final del driver]
 
 ---
 
@@ -387,6 +420,7 @@ flowchart TD
 
     Q --> R[Cierre final del driver]
 ```
+
 ## Flujo listing_scraper.py
 
 ``` mermaid
