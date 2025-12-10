@@ -333,7 +333,73 @@ flowchart TD
     Q --> R[Cierre final del driver]
 ```
 ---
+### 2. ListingScraper
+Diseño: Usa múltiples selectors porque la estructura HTML puede variar.
 
+Responsable de:
+
+- abrir páginas de listado
+- hacer scroll infinito
+- detectar el límite de paginación
+- extraer enlaces a:
+   - /detalle/
+   - /proyecto/
+
+-limpiar enlaces
+-manejar HTML con BeautifulSoup
+
+### Flujo listing_scraper.py
+
+``` mermaid
+flowchart TD
+
+    A[ListingScraper inicia] --> B[Recibir driver]
+    B --> C[Cargar pagina de listado]
+    C --> D[Scroll en pagina]
+    D --> E[Obtener HTML page_source]
+
+    E --> F[Parsear con BeautifulSoup]
+    F --> G[Extraer links de propiedades y proyectos]
+
+    G --> H{Hay paginacion extra?}
+    H -->|Si| I[Continuar paginas]
+    H -->|No| J[Detener]
+
+    I --> C
+    J --> K[Retornar lista de links]
+
+```
+--- 
+### 3. DetailScraper
+Características técnicas:
+- Extracción resiliente: Múltiples selectores fallback
+- Lógica condicional: Diferencia lotes de construcciones
+- Métodos especializados: _extract_garage_specific() maneja casos complejos
+### Flujo detail_scraper.py
+
+``` mermaid
+flowchart TD
+
+    A[DetailScraper inicia] --> B[Recibir driver]
+    B --> C[Acceder a URL propiedad]
+
+    C --> D[Detectar captcha]
+    D -->|Captcha| E[Retornar None]
+
+    D -->|OK| F[Obtener HTML]
+    F --> G[Parsear con BeautifulSoup]
+
+    G --> H[Extraer datos: precio, area, cuartos]
+    H --> I[Extraer datos: banos, garajes]
+    I --> J[Extraer descripcion y amenities]
+
+    J --> K{Es proyecto?}
+    K -->|Si| L[Retornar indicador de proyecto]
+    K -->|No| M[Retornar dict propiedad]
+
+```
+---
+  
 ## Carpeta properati_scraper/ -> Scraper inmboliario (Properati)
 ``` css
 properati_scraper/
@@ -491,50 +557,8 @@ flowchart TD
     X --> Y[Cerrar driver]
 
 ```
-## Flujo listing_scraper.py
 
-``` mermaid
-flowchart TD
 
-    A[ListingScraper inicia] --> B[Recibir driver]
-    B --> C[Cargar pagina de listado]
-    C --> D[Scroll en pagina]
-    D --> E[Obtener HTML page_source]
-
-    E --> F[Parsear con BeautifulSoup]
-    F --> G[Extraer links de propiedades y proyectos]
-
-    G --> H{Hay paginacion extra?}
-    H -->|Si| I[Continuar paginas]
-    H -->|No| J[Detener]
-
-    I --> C
-    J --> K[Retornar lista de links]
-
-```
-## Flujo detail_scraper.py
-
-``` mermaid
-flowchart TD
-
-    A[DetailScraper inicia] --> B[Recibir driver]
-    B --> C[Acceder a URL propiedad]
-
-    C --> D[Detectar captcha]
-    D -->|Captcha| E[Retornar None]
-
-    D -->|OK| F[Obtener HTML]
-    F --> G[Parsear con BeautifulSoup]
-
-    G --> H[Extraer datos: precio, area, cuartos]
-    H --> I[Extraer datos: banos, garajes]
-    I --> J[Extraer descripcion y amenities]
-
-    J --> K{Es proyecto?}
-    K -->|Si| L[Retornar indicador de proyecto]
-    K -->|No| M[Retornar dict propiedad]
-
-```
 ## Flujo project_scraper.py
 
 ``` mermaid
