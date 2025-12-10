@@ -346,7 +346,9 @@ flowchart TD
 
     Q --> R[Cierre final del driver]
 ```
+
 ---
+
 ### 2. ListingScraper
 Diseño: Usa múltiples selectors porque la estructura HTML puede variar.
 
@@ -383,7 +385,9 @@ flowchart TD
     J --> K[Retornar lista de links]
 
 ```
+
 --- 
+
 ### 3. DetailScraper
 Características técnicas:
 - Extracción resiliente: Múltiples selectores fallback
@@ -412,7 +416,9 @@ flowchart TD
     K -->|No| M[Retornar dict propiedad]
 
 ```
+
 ---
+
 ### 4. ProjectScraper
 Muchos listados son proyectos.
 Este scraper:
@@ -449,7 +455,9 @@ flowchart TD
     L --> M[Incluir datos del proyecto en las unidades]
 
 ```
+
 ---
+
 ### Funciones utilitarias (helpers.py)
 Método self_extract -> Prueba múltiples selectores hasta encontrar uno válido
 ¿Por qué múltiples selectores?
@@ -518,6 +526,8 @@ Soluciones:
 Problema: Confusión entre "120 metros cuadrados" y 2 garajes.
 Solución:
 Se plantearon keywords para buscar garajes en lugar de áreas.
+
+---
 
 ## Gestión y persistencia de datos
 ### Clase especializada DataHandler
