@@ -29,7 +29,7 @@ Toda la información se muestra en la consola, pero la arquitectura está prepar
 ---
 
 ## Flujo de trabajo
-Para este proyecto se utilizó la metodología scrum realizando 2 sprints en el desarrollo de este mismo. Además, se utilizó clickup para controlar y programarlas tareas de cada uno de los integrantes.
+Para este proyecto se utilizó la metodología scrum realizando 2 sprints en el desarrollo de este mismo. Además, se utilizó clickup para controlar y programar las tareas de cada uno de los integrantes.
 <img width="1624" height="807" alt="Captura de pantalla 2025-12-06 170822" src="https://github.com/user-attachments/assets/95e1a001-cdca-42e8-8ea0-700091cb91c5" />
 
 ---
