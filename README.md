@@ -477,5 +477,36 @@ flowchart TD
 ```
 ---
 
+## Desafíos Técnicos
 
+### 1. Detección y Manejo de CAPTCHA
+Problema: Properati bloquea bots con CAPTCHA
+Solución: 
+- 1. Detectar CAPTCHA temprano
+- 2. Esperar tiempo aleatorio (parecer humano)
+- 3. Reiniciar navegador (nueva sesión)
+- 4. Continuar desde donde se quedó
+ 
+### 2. Guardado Incremental
+Problema: Si el scraper se interrumpe (error, CAPTCHA) se pierde todo.
+Solución:
+Se guarda cada 12 intervalos usando el método protegido `save_data_incremental`. Con este método se pierden 11 propiedades en caso de fallo
 
+### 3. Simulación de Comportamiento Humano
+Problema: Comportamiento robótico es detectado.
+Soluciones:
+- 1. Se añadió una pausa humana aleatoria.
+- 2. Se planteó un límite de solicitudes por minuto
+- 3. Se añadió un scroll a la página para cargar el contenido dinámico
+
+### 4. Extracción específica: Garajes.
+Problema: Confusión entre "120 metros cuadrados" y 2 garajes.
+Solución:
+Se plantearon keywords para buscar garajes en lugar de áreas.
+
+## Gestión y persistencia de datos
+### Clase especializada DataHandler
+Características:
+- Dual format: CSV (análisis) + JSON (programático)
+- Timestamps: Cada ejecución genera archivos únicos
+- Estadísticas automáticas: Resumen post-scraping
