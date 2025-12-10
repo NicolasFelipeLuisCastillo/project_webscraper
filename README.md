@@ -64,7 +64,6 @@ python -m src.main
 ---
 
 ## Estructura del proyecto
-
 ``` css
 src/
    ├── main.py
@@ -437,9 +436,48 @@ flowchart TD
 ```
 ---
 ### Funciones utilitarias (helpers.py)
+Método self_extract -> Prueba múltiples selectores hasta encontrar uno válido
+¿Por qué múltiples selectores?
+- Properati puede cambiar su HTML.
+- Diferentes tipos de propiedades tienen estructuras diferentes
+- Esto hace el scraper mas robusto
 
+Método extract_numeric_value -> Extracción inteligente
+Estrategia Fallback: si falla un método, prueba otro
 
+### Flujo helpers.py
 
+``` mermaid
+flowchart TD
+
+    A[helpers.py] --> B[safe_extract]
+    B --> C[Intentar selector primario]
+    C --> D{Existe valor?}
+    D -->|Si| E[Retornar texto]
+    D -->|No| F[Intentar selectores alternos]
+    F --> E
+
+    A --> G[extract_numeric_value]
+    G --> H[Limpiar texto]
+    H --> I[Buscar numeros]
+    I --> J[Retornar numero o None]
+
+    A --> K[extract_business_type]
+    K --> L[Buscar palabras clave venta arriendo]
+    L --> M[Retornar tipo]
+
+    A --> N[detect_captcha]
+    N --> O[Buscar patrones captcha]
+    O --> P[Retornar True o False]
+
+    A --> Q[human_pause]
+    Q --> R[Calcular pausa aleatoria]
+    R --> S[time.sleep]
+
+```
+---
+
+### Otros archivos
 ### Archivo config.py
 Contiene:
 - URL base: https://www.properati.com.co
@@ -575,42 +613,8 @@ flowchart TD
     X --> Y[Cerrar driver]
 
 ```
+---
 
-
-
-## Flujo properati_main.py
-
-
-## Flujo helpers.py
-
-``` mermaid
-flowchart TD
-
-    A[helpers.py] --> B[safe_extract]
-    B --> C[Intentar selector primario]
-    C --> D{Existe valor?}
-    D -->|Si| E[Retornar texto]
-    D -->|No| F[Intentar selectores alternos]
-    F --> E
-
-    A --> G[extract_numeric_value]
-    G --> H[Limpiar texto]
-    H --> I[Buscar numeros]
-    I --> J[Retornar numero o None]
-
-    A --> K[extract_business_type]
-    K --> L[Buscar palabras clave venta arriendo]
-    L --> M[Retornar tipo]
-
-    A --> N[detect_captcha]
-    N --> O[Buscar patrones captcha]
-    O --> P[Retornar True o False]
-
-    A --> Q[human_pause]
-    Q --> R[Calcular pausa aleatoria]
-    R --> S[time.sleep]
-
-```
 ## Flujo file_handlers.py
 
 ``` mermaid
@@ -634,55 +638,7 @@ flowchart TD
     M --> N[Retornar nombre unico]
 
 ```
-## Diagrama de clase de properati simple
-
-``` mermaid
-classDiagram
-
-    class WebDriverController {
-        +driver
-        +headless
-        +create_driver()
-        +close()
-        +restart()
-    }
-
-    class ListingScraper {
-        +driver
-        +extract_links()
-        +check_pagination_limit()
-    }
-
-    class DetailScraper {
-        +driver
-        +scrape_property()
-        +scrape_with_captcha()
-    }
-
-    class ProjectScraper {
-        +driver
-        +scrape_project_with_units()
-    }
-
-    class DataHandler {
-        +save_data()
-        +log_statistics()
-        +unique_filename()
-    }
-
-    class ProperatiScraper {
-        +run()
-        +handle_captcha()
-        +save_incremental()
-    }
-
-    ProperatiScraper --> WebDriverController
-    ProperatiScraper --> ListingScraper
-    ProperatiScraper --> DetailScraper
-    ProperatiScraper --> ProjectScraper
-    ProperatiScraper --> DataHandler
-
-```
+---
 ## Diagrama de secuencia
 
 ``` mermaid
