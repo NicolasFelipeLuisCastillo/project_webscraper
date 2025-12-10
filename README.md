@@ -24,6 +24,8 @@
 8. Desafíos técnicos
 9. Gestión y persistencia de datos
 
+---
+
 ## Resumen
 Este proyecto implementa un sistema de **web scraping** en Python, diseñado con principios de **Programación Orientada a Objetos (POO)**.
 El sistema busca **extraer información de Wikipedia** y **extraer y organizar listados de propiedades de Properati**
