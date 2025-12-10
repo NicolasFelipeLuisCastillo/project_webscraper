@@ -279,6 +279,61 @@ Enfoque: Scraping basado en Selenium (navegador automatizado)
 | Detección antibot | Díficil de detectar | Fácil de detectar (necesita stealth)|
 | Velocidad | Rápido | Lento |
 
+---
+
+### Componentes Especializados
+### 1. WebDriverController ubicado en drivers.py
+Uso de `selenium-stealth` para evitar detección de automatización.
+
+- Inicializar Chrome
+Con headless o no.
+
+- Configurar:
+   - user-agent
+   - anti-detección
+   - opciones stealth
+
+- Reiniciar el driver
+Si ocurre un CAPTCHA.
+
+- Cerrar el navegador
+  
+### Flujo drivers.py
+``` mermaid
+flowchart TD
+
+    A[Crear instancia WebDriverController] --> B[Init controlador]
+    B --> C[Llamar a create driver]
+
+    C --> D[Configurar ChromeOptions]
+    D --> E[Agregar flags y opciones]
+
+    E --> F[Aplicar anti deteccion]
+    F --> G[Inicializar Chrome con driver]
+
+    G --> H[Agregar script para ocultar webdriver]
+    H --> I[Driver Selenium listo]
+
+    I --> J[ListingScraper usa driver]
+    I --> K[DetailScraper usa driver]
+    I --> L[ProjectScraper usa driver]
+
+    J --> M[Acceso Selenium]
+    K --> M
+    L --> M
+
+    M --> N{Captcha?}
+
+    N -->|Si| O[Cerrar driver]
+    O --> P[Recrear WebDriverController]
+    P --> C
+
+    N -->|No| Q[Continuar scraping]
+
+    Q --> R[Cierre final del driver]
+```
+---
+
 ## Carpeta properati_scraper/ -> Scraper inmboliario (Properati)
 ``` css
 properati_scraper/
@@ -317,57 +372,6 @@ Contiene:
 - Palabras clave
 - Carpetas de datos
 
----
-### Archivo drivers.py
-- Inicializar Chrome
-Con headless o no.
-
-- Configurar:
-   - user-agent
-   - anti-detección
-   - opciones stealth
-
-- Reiniciar el driver
-Si ocurre un CAPTCHA.
-
-- Cerrar el navegador
-
----
-
-### Flujo drivers.py
-``` mermaid
-flowchart TD
-
-    A[Crear instancia WebDriverController] --> B[Init controlador]
-    B --> C[Llamar a create driver]
-
-    C --> D[Configurar ChromeOptions]
-    D --> E[Agregar flags y opciones]
-
-    E --> F[Aplicar anti deteccion]
-    F --> G[Inicializar Chrome con driver]
-
-    G --> H[Agregar script para ocultar webdriver]
-    H --> I[Driver Selenium listo]
-
-    I --> J[ListingScraper usa driver]
-    I --> K[DetailScraper usa driver]
-    I --> L[ProjectScraper usa driver]
-
-    J --> M[Acceso Selenium]
-    K --> M
-    L --> M
-
-    M --> N{Captcha?}
-
-    N -->|Si| O[Cerrar driver]
-    O --> P[Recrear WebDriverController]
-    P --> C
-
-    N -->|No| Q[Continuar scraping]
-
-    Q --> R[Cierre final del driver]
-```
 ---
 ### Archivo properati_main.py
 
