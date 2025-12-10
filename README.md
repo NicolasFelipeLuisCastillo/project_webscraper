@@ -11,6 +11,19 @@
 
 ---
 
+## Tabla de contenidos
+- 1. Resumen del proyecto
+- 2. Flujo de trabajo
+- 3. Instrucciones de instalación
+- 4. Estructura del proyecto
+- 5. Diagrama de clases general
+- 6. Solución 1: WikiScraper
+- 7. Solución 2: ProperatiScraper
+      - Componentes especializados
+      - Componentes utilitarios
+- 8. Desafíos técnicos
+- 9. Gestión y persistencia de datos
+
 ## Resumen
 Este proyecto implementa un sistema de **web scraping** en Python, diseñado con principios de **Programación Orientada a Objetos (POO)**.
 El sistema busca **extraer información de Wikipedia** y **extraer y organizar listados de propiedades de Properati**
