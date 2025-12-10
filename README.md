@@ -229,40 +229,13 @@ classDiagram
 ```
 ---
 
-## Carpeta principal del código /src
-``` css
-src/
-│
-├── main.py
-└── models/
-```
-
-### Archivo main.py
-Ofrece un menú interactivo:
-
-- Ejecutar Properati Scraper
-- Ejecutar WikiScraper
-
----
-
-## Carpeta /src/models
-``` css
-models/
-│
-├── realestate_scraper.py
-├── wiki_scraper.py
-└── properati_scraper/
-
-```
-### Archivo wiki_scraper.py
-Un scraper minimalista que muestra cómo usar:
-
-- Requests
-- BeautifulSoup
-- La clase base Scraper
-
-Descarga páginas de Wikipedia, extrae título y contenido y devuelve un csv.
-
+## Solución tarea 1: WikiScraper
+### Clase WikiScraper
+Enfoque: Scraping basado en requests (HTTP simple)
+Características:
+- Usa herencia de `Scraper` base
+- Implementa `parse()` específico para estructura HTML de Wikipedia.
+Output: Archivos csv y json con el título y el contenido de la página.
 
 ## Flujo wiki_scraper.py
 ``` mermaid
@@ -293,6 +266,19 @@ flowchart TD
 ```
 
 ---
+
+## Solución Tarea 2: Properati
+Clase principal: `ProperatiScraper`
+Enfoque: Scraping basado en Selenium (navegador automatizado)
+
+¿Por qué Selenium y no requests?
+| Aspecto | Requests | Selenium |
+|---------|----------|----------|
+| Javascript| No ejecuta | Si ejecuta |
+| Contenido dinámico | No carga | Carga todo |
+| Detección antibot | Díficil de detectar | Fácil de detectar (necesita stealth)|
+| Velocidad | Rápido | Lento |
+
 ## Carpeta properati_scraper/ -> Scraper inmboliario (Properati)
 ``` css
 properati_scraper/
