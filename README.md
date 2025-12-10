@@ -399,28 +399,46 @@ flowchart TD
 
 ```
 ---
-  
-## Carpeta properati_scraper/ -> Scraper inmboliario (Properati)
-``` css
-properati_scraper/
-│
-├── config.py
-├── drivers.py
-├── properati_main.py
-│
-├── scrapers/
-│   ├── base_scraper.py
-│   ├── listing_scraper.py
-│   ├── detail_scraper.py
-│   └── project_scraper.py
-│
-└── utils/
-    ├── helpers.py
-    └── file_handlers.py
+### 4. ProjectScraper
+Muchos listados son proyectos.
+Este scraper:
+- 1. Scrapea la página general del proyecto
+- 2. Extrae info (amenities, áreas, constructor)
+- 3. Encuentra todas las unidades
+- 4. Scrapea cada unidad individual
+- 5. Envía todo el conjunto al DataHandler
+Produce varios objetos “propiedad” por un solo proyecto.
+
+### Flujo project_scraper.py
+
+``` mermaid
+flowchart TD
+
+    A[ProjectScraper inicia] --> B[Acceder a URL de proyecto]
+
+    B --> C[Detectar captcha]
+    C -->|Captcha| D[Retornar None]
+
+    C -->|OK| E[Obtener HTML principal]
+
+    E --> F[Extraer datos generales del proyecto]
+    F --> G[Extraer lista de unidades]
+
+    G --> H[Iterar unidades]
+    H --> I[Scrapear unidad]
+    I --> J[Agregar unidad al dataset]
+
+    J --> K{Quedan unidades?}
+    K -->|Si| H
+    K -->|No| L[Retornar lista de unidades]
+
+    L --> M[Incluir datos del proyecto en las unidades]
 
 ```
-
 ---
+### Funciones utilitarias (helpers.py)
+
+
 
 ### Archivo config.py
 Contiene:
@@ -559,32 +577,7 @@ flowchart TD
 ```
 
 
-## Flujo project_scraper.py
 
-``` mermaid
-flowchart TD
-
-    A[ProjectScraper inicia] --> B[Acceder a URL de proyecto]
-
-    B --> C[Detectar captcha]
-    C -->|Captcha| D[Retornar None]
-
-    C -->|OK| E[Obtener HTML principal]
-
-    E --> F[Extraer datos generales del proyecto]
-    F --> G[Extraer lista de unidades]
-
-    G --> H[Iterar unidades]
-    H --> I[Scrapear unidad]
-    I --> J[Agregar unidad al dataset]
-
-    J --> K{Quedan unidades?}
-    K -->|Si| H
-    K -->|No| L[Retornar lista de unidades]
-
-    L --> M[Incluir datos del proyecto en las unidades]
-
-```
 ## Flujo properati_main.py
 
 
