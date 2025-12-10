@@ -237,7 +237,7 @@ Características:
 - Implementa `parse()` específico para estructura HTML de Wikipedia.
 Output: Archivos csv y json con el título y el contenido de la página.
 
-## Flujo wiki_scraper.py
+### Flujo wiki_scraper.py
 ``` mermaid
 flowchart TD
 
@@ -345,8 +345,8 @@ Responsable de:
    - /detalle/
    - /proyecto/
 
--limpiar enlaces
--manejar HTML con BeautifulSoup
+- limpiar enlaces
+- manejar HTML con BeautifulSoup
 
 ### Flujo listing_scraper.py
 
