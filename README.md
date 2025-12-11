@@ -408,8 +408,8 @@ flowchart TD
     F --> G[Parsear con BeautifulSoup]
 
     G --> H[Extraer datos: precio, area, cuartos]
-    H --> I[Extraer datos: ba{os, garajes]
-    I --> J[Extraer descripcion y amenities]
+    H --> I[Extraer datos: baños, garajes]
+    I --> J[Extraer descripcion y características]
 
     J --> K{Es proyecto?}
     K -->|Si| L[Retornar indicador de proyecto]
